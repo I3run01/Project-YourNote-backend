@@ -37,10 +37,7 @@ export const UsersController = {
         let token: string = jwtToken(user.id)
 
         res.cookie('jwt', token, {httpOnly: true})
-
-        console.log(token)
         
         return res.json(user);
-
     },
 }
