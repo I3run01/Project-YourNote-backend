@@ -1,12 +1,5 @@
 import jwt from 'jsonwebtoken';
 
-export const jwtToken = (parameter: string): string => {
-    const expiryTimeSeconds = 180 * 24 * 60 * 60
-
-    return jwt.sign({
-            parameter,
-            exp: expiryTimeSeconds
-        }, 
-        process.env.JWT_SECRET_KEY as string,
-    );
+export const jwtToken = (id: string): string => {
+    return jwt.sign({id}, process.env.JWT_SECRET_KEY as string, {expiresIn: '180d'});
 }
