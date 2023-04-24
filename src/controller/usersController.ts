@@ -40,4 +40,44 @@ export const UsersController = {
         
         return res.json(user);
     },
+
+    
+    signIn: async (req: Request, res: Response) => {
+        const { email, password } = req.body;
+
+        const user = await usersService.findByEmail(email)
+
+        if(!user) {
+            res.status(400)
+
+            return res.json({
+                message: 'invaid credentials',
+                error: 'bad request'
+            });
+        }
+
+        if(! await bcryptCompare(password, user.password as string)) {
+            res.status(400)
+
+            return res.json({
+                message: 'invaid credentials',
+                error: 'bad request'
+            });
+        }
+
+        let token: string = jwtToken(user.id)
+
+        res.cookie('jwt', token, {httpOnly: true})
+
+        user.password = null
+
+        return res.json(user)
+    },
+
+    signOut: async (req: Request, res: Response) => {
+        res.clearCookie('jwt');
+
+        return res.json({ message: 'success'})
+    }
+    
 }
