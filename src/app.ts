@@ -3,16 +3,17 @@ import path from 'path'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import router from './router/usersRouter'
+import cookieParser from "cookie-parser";
 import { mongoConnect } from './database/mongoDB'
 
 dotenv.config()
 
 const server = express()
 
-server.use(cors())
-
 mongoConnect()
 
+server.use(cookieParser())
+server.use(cors())
 server.use(express.static(path.join(__dirname, '../public')))
 server.use(express.urlencoded({ extended: true}))
 server.use(router)

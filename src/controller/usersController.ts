@@ -67,6 +67,8 @@ export const UsersController = {
 
         let token: string = jwtToken(user.id)
 
+        console.log(user.id)
+
         res.cookie('jwt', token, {httpOnly: true})
 
         user.password = null
@@ -78,6 +80,37 @@ export const UsersController = {
         res.clearCookie('jwt');
 
         return res.json({ message: 'success'})
+    },
+
+    user: async (req: Request, res: Response) => {
+        try {
+            const cookie = await req.cookies['jwt']
+
+            console.log(cookie)
+            
+            const data = req.cookies.jwt;
+
+            console.log(data)
+
+            if(!data) {
+                return res.json({
+                    message: 'Unauthorized request',
+                    error: 'bad request'
+                });
+            }
+
+            console.log(data.id)
+
+            let user = await usersService.findById(data.id)
+
+            return user
+
+        } catch {
+            return res.json({
+                message: 'Unauthorized request',
+                error: 'bad request'
+            });
+        }
     }
     
 }
