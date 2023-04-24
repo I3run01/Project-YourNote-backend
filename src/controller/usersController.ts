@@ -1,7 +1,8 @@
-import express, { Request, Response, ErrorRequestHandler } from 'express';
+import { Request, Response, response } from 'express';
 import { hash, compare as bcryptCompare } from 'bcrypt';
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
+import { jwtToken } from '../auth/jwtToken'
 
 export const UsersController = {
 
@@ -33,6 +34,12 @@ export const UsersController = {
 
         user.password = null;
 
+        let token: string = jwtToken(user.id)
+
+        res.cookie('jwt', token, {httpOnly: true})
+
+        console.log(token)
+        
         return res.json(user);
 
     },
