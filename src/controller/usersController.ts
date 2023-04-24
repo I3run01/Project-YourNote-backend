@@ -98,9 +98,7 @@ export const UsersController = {
                     error: 'bad request'
                 });
             }
-
-            console.log(data.id)
-
+            
             let user = await usersService.findById(data.id)
 
             return user
