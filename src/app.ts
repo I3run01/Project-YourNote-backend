@@ -3,7 +3,6 @@ import path from 'path'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import router from './router/usersRouter'
-
 import { mongoConnect } from './database/mongoDB'
 
 dotenv.config()
