@@ -1,4 +1,4 @@
-import { connect } from "mongoose";
+import { connect, disconnect } from "mongoose";
 
 export const mongoConnect = async () => {
     try {
@@ -9,3 +9,12 @@ export const mongoConnect = async () => {
         console.log('mongoDB connection error:', error)
     }
 }
+
+export async function mongoDisconnect() {
+    try {
+      await disconnect();
+      console.log('Disconnected from MongoDB');
+    } catch (error) {
+      console.error('Error disconnecting from MongoDB:', error);
+    }
+  }
