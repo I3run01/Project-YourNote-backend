@@ -1,4 +1,4 @@
-import express, {Request, Response, ErrorRequestHandler} from 'express'
+import express, {Request, Response} from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import usersRouter from './router/usersRouter'
@@ -27,8 +27,4 @@ server.use((req: Request, res: Response) => {
     res.json({ error: 'Endpoint not found'})
 })
 
-const PORT = process.env.PORT || 4000
-
-server.listen(PORT, () => {
-    console.log(`Server is running on PORT = ${PORT}`)
-})
+export default server
