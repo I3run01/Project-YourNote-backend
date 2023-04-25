@@ -86,6 +86,8 @@ export const UsersController = {
 
             let data = JSON.parse(jwtToken.jwtDecoded(token))
 
+            console.log(data)
+
             if(!data) {
                 return res.json({
                     message: 'Unauthorized request',
@@ -94,6 +96,8 @@ export const UsersController = {
             }
             
             let user = await usersService.findById(data.id)
+
+            console.log(user)
 
             return res.json(user)
 
