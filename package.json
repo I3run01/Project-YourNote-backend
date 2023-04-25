@@ -28,7 +28,7 @@
   "scripts": {
     "test": "set NODE_ENV=test& jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json --forceExit",
-    "start:dev": "nodemon -e ts,json src/server.ts"
+    "start:dev": "nodemon -e ts,json src/app.ts"
   },
   "repository": {
     "type": "git",

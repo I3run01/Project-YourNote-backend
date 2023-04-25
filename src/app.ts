@@ -18,9 +18,6 @@ server.use(cors({
 }))
 
 server.use(cookieParser())
-server.use(express.static(path.join(__dirname, '../public')))
-server.use(express.urlencoded({ extended: true}))
-
 server.use('/api/users', usersRouter)
 
 server.use((req: Request, res: Response) => {
@@ -28,4 +25,8 @@ server.use((req: Request, res: Response) => {
     res.json({ error: 'Endpoint not found'})
 })
 
-export default server
+const PORT = process.env.PORT || 4000
+
+server.listen(PORT, () => {
+    console.log(`Server is running on PORT = ${PORT}`)
+})

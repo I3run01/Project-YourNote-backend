@@ -94,8 +94,6 @@ export const UsersController = {
             
             let user = await usersService.findById(data.id)
 
-            console.log(user)
-
             return res.json(user)
 
         } catch {
