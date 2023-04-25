@@ -86,8 +86,6 @@ export const UsersController = {
 
             let data = JSON.parse(jwtToken.jwtDecoded(token))
 
-            console.log(data)
-
             if(!data) {
                 return res.json({
                     message: 'Unauthorized request',
