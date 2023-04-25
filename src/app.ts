@@ -2,7 +2,7 @@ import express, {Request, Response, ErrorRequestHandler} from 'express'
 import path from 'path'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import router from './router/usersRouter'
+import usersRouter from './router/usersRouter'
 import cookieParser from "cookie-parser";
 import { mongoConnect } from './database/mongoDB'
 
@@ -20,7 +20,7 @@ server.use(cors({
 server.use(cookieParser())
 server.use(express.static(path.join(__dirname, '../public')))
 server.use(express.urlencoded({ extended: true}))
-server.use(router)
+server.use('/api/users' ,usersRouter)
 
 server.use((req: Request, res: Response) => {
     res.status(404)
