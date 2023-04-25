@@ -17,4 +17,4 @@ export async function mongoDisconnect() {
     } catch (error) {
       console.error('Error disconnecting from MongoDB:', error);
     }
-  }
+}
