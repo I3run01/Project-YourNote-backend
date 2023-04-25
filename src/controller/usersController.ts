@@ -16,7 +16,11 @@ export const UsersController = {
         let user = await usersService.findByEmail(email);
 
         if (user) {
-            throw new Error('user already exists')
+            res.status(400)
+            return res.json({
+                message: 'user already exists',
+                error: 'bad request'
+            });
         }
 
         const createUserDto: CreateUserDto = {
