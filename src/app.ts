@@ -17,6 +17,8 @@ server.use(cors({
     credentials: true
 }))
 
+server.use(express.static(path.join(__dirname, '../public')))
+server.use(express.urlencoded({ extended: true}))
 server.use(cookieParser())
 server.use('/api/users', usersRouter)
 
