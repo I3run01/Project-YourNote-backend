@@ -8,7 +8,7 @@ export const usersService = {
     
     findById: async  (id: string) => {
         return await usersModel.findById(id)
-      },
+    },
     
     findByEmail: async (email: string) => {
         return await usersModel.findOne({email})

@@ -24,7 +24,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "set NODE_ENV=test& jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json --forceExit",
     "start:dev": "nodemon -e ts,json src/server.ts"
   },
   "repository": {
