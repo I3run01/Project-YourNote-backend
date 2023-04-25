@@ -40,7 +40,6 @@ export const UsersController = {
         
         return res.json(user);
     },
-
     
     signIn: async (req: Request, res: Response) => {
         const { email, password } = req.body;
