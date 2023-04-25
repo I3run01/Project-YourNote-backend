@@ -8,5 +8,6 @@ router.get('/api/users/signout', UsersController.signOut)
 router.get('/api/users', UsersController.user)
 router.post('/api/users/signup', UsersController.signUp)
 router.post('/api/users/signin', UsersController.signIn)
+router.delete('/api/users', UsersController.deleteOne)
 
 export default router

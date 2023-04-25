@@ -34,7 +34,7 @@ export const UsersController = {
 
         user.password = null;
 
-        let token: string = jwtToken(user.id)
+        let token: string = jwtToken.jwtEncoded(user.id)
 
         res.cookie('jwt', token, {httpOnly: true})
         
@@ -65,9 +65,7 @@ export const UsersController = {
             });
         }
 
-        let token: string = jwtToken(user.id)
-
-        console.log(user.id)
+        let token: string = jwtToken.jwtEncoded(user.id)
 
         res.cookie('jwt', token, {httpOnly: true})
 
@@ -84,13 +82,9 @@ export const UsersController = {
 
     user: async (req: Request, res: Response) => {
         try {
-            const cookie = await req.cookies['jwt']
+            const token = await req.cookies['jwt']
 
-            console.log(cookie)
-            
-            const data = req.cookies.jwt;
-
-            console.log(data)
+            let data = JSON.parse(jwtToken.jwtDecoded(token))
 
             if(!data) {
                 return res.json({
@@ -101,7 +95,7 @@ export const UsersController = {
             
             let user = await usersService.findById(data.id)
 
-            return user
+            return res.json(user)
 
         } catch {
             return res.json({
@@ -109,6 +103,36 @@ export const UsersController = {
                 error: 'bad request'
             });
         }
+    },
+
+    deleteOne: async (req: Request, res: Response) => {
+        const token = await req.cookies['jwt']
+
+        const data = JSON.parse(jwtToken.jwtDecoded(token))
+
+        return res.json(await usersService.deleteOne(data.id))
+    },
+
+    googleSignIn: async (req: Request, res: Response) => {
+        const { email, picture, name } = req.body;
+
+        let user = await usersService.findByEmail(email)
+
+        if(!user) {
+            user = await usersService.create({
+                name,
+                email,
+                password: await hash(String(Math.random()), 10),
+                avatarImage: picture
+            });
+        }
+
+        let token: string = jwtToken.jwtEncoded(user.id)
+
+        user.password = null
+
+        res.cookie('jwt', token, {httpOnly: true})
+
+        return res.json(user)
     }
-    
 }
