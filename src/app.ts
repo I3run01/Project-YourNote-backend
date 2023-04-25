@@ -1,5 +1,4 @@
 import express, {Request, Response, ErrorRequestHandler} from 'express'
-import path from 'path'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import usersRouter from './router/usersRouter'
