@@ -8,9 +8,9 @@ import { mongoConnect } from './database/mongoDB'
 
 dotenv.config()
 
-const server = express()
-
 mongoConnect()
+
+const server = express()
 
 server.use(cors({
     origin: 'http://localhost:3000',
