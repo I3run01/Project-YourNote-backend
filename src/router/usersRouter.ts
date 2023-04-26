@@ -9,6 +9,7 @@ router.get('', UsersController.user)
 router.post('/signin', UsersController.signIn)
 router.post('/signup', UsersController.signUp)
 router.post('/googleSignin', UsersController.googleSignIn)
+router.post('/pingpost', UsersController.pingPOST)
 router.delete('', UsersController.deleteOne)
 router.delete('', UsersController.deleteOne)
 

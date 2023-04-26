@@ -10,8 +10,23 @@ export const UsersController = {
         res.json({pong: true})
     },
 
+    pingPOST: (req: Request, res: Response) => {
+        const { email, password } = req.body;
+
+        res.json({email, password })
+
+    },
+
     signUp: async (req: Request, res: Response) => {
         const { email, password } = req.body;
+
+        if (!email || !password) {
+            res.status(400)
+            return res.json({
+                message: 'invaid credentials',
+                error: 'bad request'
+            });
+        }
 
         let user = await usersService.findByEmail(email);
 
@@ -44,11 +59,19 @@ export const UsersController = {
     signIn: async (req: Request, res: Response) => {
         const { email, password } = req.body;
 
+        if (!email || !password) {
+            res.status(400)
+            return res.json({
+                message: 'invaid credentials',
+                error: 'bad request'
+            });
+        }
+
         const user = await usersService.findByEmail(email)
 
         if(!user) {
-            res.status(400)
 
+            res.status(400)
             return res.json({
                 message: 'invaid credentials',
                 error: 'bad request'
@@ -114,6 +137,14 @@ export const UsersController = {
 
     googleSignIn: async (req: Request, res: Response) => {
         const { email, picture, name } = req.body;
+
+        if (!email || !picture || !name) {
+            res.status(400)
+            return res.json({
+                message: 'invaid credentials',
+                error: 'bad request'
+            });
+        }
 
         let user = await usersService.findByEmail(email)
 
