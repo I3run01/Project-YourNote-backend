@@ -3,6 +3,7 @@ import app from '../app';
 import { usersService } from '../services/usersService';
 
 const userMock = {
+  id: 'id',
   name: 'John Doe',
   email: 'john.doe@example.com',
   password: 'password123',
@@ -18,14 +19,6 @@ describe('UsersController', () => {
     });
   });
 
-  describe('pingpost', () => {
-    it('should return a response with email and password', async () => {
-      const response = await request(app).post('/api/users/pingpost').send({email: 'email', password: 'password'});
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({email: 'email', password: 'password'});
-    });
-  });
-
   describe('signUp', () => {
     it('should create a new user and return it with status code 200', async () => {
       usersService.findByEmail = jest.fn().mockReturnValue(null)
@@ -37,7 +30,7 @@ describe('UsersController', () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('id');
-      expect(response.body.email).toBe('test@example.com');
+      expect(response.body.email).toBe('john.doe@example.com');
       expect(response.body.password).toBe(null)
     });
 

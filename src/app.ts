@@ -3,7 +3,9 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import usersRouter from './router/usersRouter'
 import cookieParser from "cookie-parser";
+import bodyParser from 'body-parser';
 import { mongoConnect } from './database/mongoDB'
+
 
 dotenv.config()
 
@@ -15,6 +17,8 @@ server.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }))
+
+server.use(bodyParser.json())
 
 server.use(cookieParser())
 

@@ -10,13 +10,6 @@ export const UsersController = {
         res.json({pong: true})
     },
 
-    pingPOST: (req: Request, res: Response) => {
-        const { email, password } = req.body;
-
-        res.json({email, password })
-
-    },
-
     signUp: async (req: Request, res: Response) => {
         const { email, password } = req.body;
 
