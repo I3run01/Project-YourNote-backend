@@ -50,7 +50,6 @@ describe('UsersController', () => {
       expect(response.body).toHaveProperty('message', 'user already exists');
     });
   });
-
   
   describe('signIn', () => {
     it('should return a JWT token and the user with status code 200', async () => {
