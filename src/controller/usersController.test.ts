@@ -96,25 +96,21 @@ describe('UsersController', () => {
 
   describe('users', () => {
     it('should return user data when JWT is valid', async () => {
-      // Set up a mock user and JWT
       let userID = '4'
       const token = jwtToken.jwtEncoded(userID);
-  
-      // Mock the usersService's `findById()` method to return the mock user
+
       usersService.findById = jest.fn().mockResolvedValue(userMock);
   
-      // Send a request to the endpoint with the JWT in a cookie
       const response = await request(app)
         .get('/api/users')
         .set('Cookie', [`jwt=${token}`]);
-  
-      // Expect the response to have a status code of 200 and the mock user's data
+
       expect(response.status).toBe(200);
       expect(response.body).toEqual(userMock);
     });
   
     it('should return a "Unauthorized request" error when no JWT is present', async () => {
-      // Send a request to the endpoint without a JWT
+
       const response = await request(app).get('/api/users');
   
       // Expect the response to have a status code of 401 and the error message
@@ -126,18 +122,15 @@ describe('UsersController', () => {
     });
   
     it('should return a "no user has been found" error when the JWT is invalid', async () => {
-      // Set up a mock JWT with an invalid ID
-      const token = jwtToken.jwtEncoded({ id: 456 });
+      let userID = 'notRegistredUser'
+      const token = jwtToken.jwtEncoded(userID);
   
-      // Mock the usersService's `findById()` method to return `null`
       usersService.findById = jest.fn().mockResolvedValue(null);
   
-      // Send a request to the endpoint with the invalid JWT in a cookie
       const response = await request(app)
-        .get('/your-endpoint')
+        .get('/api/users')
         .set('Cookie', [`jwt=${token}`]);
-  
-      // Expect the response to have a status code of 400 and the error message
+
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
         message: 'no user has been found',
