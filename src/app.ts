@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 import bodyParser from 'body-parser';
 import { mongoConnect } from './database/mongoDB'
 
-
 dotenv.config()
 
 mongoConnect()
