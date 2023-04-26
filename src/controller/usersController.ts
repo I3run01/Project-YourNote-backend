@@ -1,5 +1,5 @@
 import { Request, Response, response } from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs'
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
@@ -52,17 +52,9 @@ export const UsersController = {
     signIn: async (req: Request, res: Response) => {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            res.status(400)
-            return res.json({
-                message: 'invaid credentials',
-                error: 'bad request'
-            });
-        }
-
         const user = await usersService.findByEmail(email)
 
-        if(!user) {
+        if(!user || !user?.password === null) {
             res.status(400)
             return res.json({
                 message: 'invalid credentials',
@@ -108,6 +100,14 @@ export const UsersController = {
             
             let user = await usersService.findById(data.id)
 
+            if(!user) {
+                res.status(400)
+                return res.json({
+                    message: 'no user has been found',
+                    error: 'bad request'
+                });
+            }
+ 
             return res.json(user)
 
         } catch {
