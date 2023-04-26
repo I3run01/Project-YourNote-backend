@@ -111,6 +111,7 @@ export const UsersController = {
             return res.json(user)
 
         } catch {
+            res.status(400)
             return res.json({
                 message: 'Unauthorized request',
                 error: 'bad request'
