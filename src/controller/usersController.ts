@@ -1,5 +1,5 @@
 import { Request, Response, response } from 'express';
-import { hash, compare as bcryptCompare } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
@@ -34,7 +34,7 @@ export const UsersController = {
         const createUserDto: CreateUserDto = {
             name: null,
             email,
-            password: await hash(password, 10),
+            password: await bcrypt.hash(password, 10),
             avatarImage: null,
         };
 
@@ -63,19 +63,17 @@ export const UsersController = {
         const user = await usersService.findByEmail(email)
 
         if(!user) {
-
             res.status(400)
             return res.json({
-                message: 'invaid credentials',
+                message: 'invalid credentials',
                 error: 'bad request'
             });
         }
 
-        if(! await bcryptCompare(password, user.password as string)) {
+        if(! await bcrypt.compare(password, user.password as string)) {
             res.status(400)
-
             return res.json({
-                message: 'invaid credentials',
+                message: 'invalid credentials',
                 error: 'bad request'
             });
         }
@@ -123,6 +121,14 @@ export const UsersController = {
     deleteOne: async (req: Request, res: Response) => {
         const token = await req.cookies['jwt']
 
+        if(!token) {
+            res.status(400)
+            return res.json({
+                message: 'no token has been sent',
+                error: 'bad request'
+            })
+        }
+
         const data = JSON.parse(jwtToken.jwtDecoded(token))
 
         return res.json(await usersService.deleteOne(data.id))
@@ -145,7 +151,7 @@ export const UsersController = {
             user = await usersService.create({
                 name,
                 email,
-                password: await hash(String(Math.random()), 10),
+                password: await bcrypt.hash(String(Math.random()), 10),
                 avatarImage: picture
             });
         }

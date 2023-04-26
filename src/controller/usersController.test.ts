@@ -1,12 +1,17 @@
 import request from 'supertest';
 import app from '../app';
 import { usersService } from '../services/usersService';
+import bcrypt from 'bcrypt';
+
+jest.mock('bcrypt', () => ({
+  bcryptCompare: jest.fn(),
+}));
 
 const userMock = {
   id: 'id',
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  password: 'password123',
+  name: 'Name example',
+  email: 'test@example.com',
+  password: '$2b$10$6ovBea5IteMBfFK0l5iLlOxqFBMV06ut7OsFxIbES2FvWwZMGglsW',
   avatarImage: 'https://example.com/picture.jpg'
 };
 
@@ -26,11 +31,11 @@ describe('UsersController', () => {
 
       const response = await request(app)
         .post('/api/users/signup')
-        .send({ email: 'test@example.com', password: 'password' });
+        .send({ email: 'test@example.com', password: '1234' });
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('id');
-      expect(response.body.email).toBe('john.doe@example.com');
+      expect(response.body.email).toBe('test@example.com');
       expect(response.body.password).toBe(null)
     });
 
@@ -46,57 +51,48 @@ describe('UsersController', () => {
     });
   });
 
-  /*
-
+  
   describe('signIn', () => {
     it('should return a JWT token and the user with status code 200', async () => {
+      usersService.findByEmail = jest.fn().mockReturnValueOnce(userMock)
+      
       const response = await request(app)
-        .post('/api/sign-in')
-        .send({ email: 'test@example.com', password: 'password' });
+        .post('/api/users/signin')
+        .send({ email: 'test@example.com', password: '1234' });
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('id');
       expect(response.body.email).toBe('test@example.com');
-      expect(response.body).not.toHaveProperty('password');
+      expect(response.body.password).toBe(null);
       expect(response.headers).toHaveProperty('set-cookie');
     });
 
     it('should return an error if the credentials are invalid', async () => {
+      usersService.findByEmail = jest.fn().mockReturnValueOnce(userMock)
+
+      bcrypt.compare = jest.fn().mockReturnValueOnce(false)
+
       const response = await request(app)
-        .post('/api/sign-in')
+        .post('/api/users/signin')
         .send({ email: 'test@example.com', password: 'wrongpassword' });
+
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'invalid credentials');
     });
   });
 
   describe('signOut', () => {
+    let route = '/api/users/signout'
+
     it('should clear the JWT cookie and return success with status code 200', async () => {
-      const response = await request(app).get('/api/sign-out');
+      const response = await request(app).get(route);
       expect(response.status).toBe(200);
       expect(response.headers).toHaveProperty('set-cookie');
       expect(response.headers['set-cookie'][0]).toMatch(/^jwt=;/);
     });
   });
 
-  describe('user', () => {
-    it('should return the authenticated user with status code 200', async () => {
-      const agent = request.agent(app); // Create a session to send authenticated requests
-      await agent.post('/api/sign-in').send({ email: 'test@example.com', password: 'password' });
-      const response = await agent.get('/api/user');
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('id');
-      expect(response.body.email).toBe('test@example.com');
-      expect(response.body).not.toHaveProperty('password');
-    });
-
-    it('should return an error if the user is not authenticated', async () => {
-      const response = await request(app).get('/api/user');
-      expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('message', 'Unauthorized request');
-    });
-  });
-
-  
+  /*
   describe('deleteOne', () => {
     it('should delete a user and return a success message', async () => {
       const user = await User.create({
