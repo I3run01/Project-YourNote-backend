@@ -3,13 +3,13 @@ import { UsersController } from "../controller/usersController";
 
 const router = Router()
 
-router.get('/ping', UsersController.ping)
-router.get('/signout', UsersController.signOut)
-router.get('', UsersController.user)
-router.post('/signin', UsersController.signIn)
-router.post('/signup', UsersController.signUp)
-router.post('/googleSignin', UsersController.googleSignIn)
-router.delete('', UsersController.deleteOne)
-router.delete('', UsersController.deleteOne)
+router.get('/ping', new UsersController().ping)
+router.get('/signout', new UsersController().signOut)
+router.get('', new UsersController().user)
+router.post('/signin', new UsersController().signIn)
+router.post('/signup', new UsersController().signUp)
+router.post('/googleSignin', new UsersController().googleSignIn)
+router.delete('', new UsersController().deleteOne)
+router.delete('', new UsersController().deleteOne)
 
 export default router

@@ -4,13 +4,13 @@ import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
 
-export const UsersController = {
+export class UsersController {
 
-    ping: (req: Request, res: Response) => {
-        res.json({pong: true})
-    },
+    ping(req: Request, res: Response) {
+        res.json({ pong: true })
+    }
 
-    signUp: async (req: Request, res: Response) => {
+    async signUp(req: Request, res: Response) {
         const { email, password } = req.body;
 
         if (!email || !password) {
@@ -21,7 +21,7 @@ export const UsersController = {
             });
         }
 
-        let user = await usersService.findByEmail(email);
+        let user = await new usersService().findByEmail(email);
 
         if (user) {
             res.status(400)
@@ -38,76 +38,87 @@ export const UsersController = {
             avatarImage: null,
         };
 
-        user = await usersService.create(createUserDto);
+        try {
+            user = await new usersService().create(createUserDto);
 
-        user.password = null;
+            user.password = null;
 
-        let token: string = jwtToken.jwtEncoded(user.id)
+            let token: string = jwtToken.jwtEncoded(user.id)
 
-        res.cookie('jwt', token, {httpOnly: true})
-        
-        return res.json(user);
-    },
-    
-    signIn: async (req: Request, res: Response) => {
+            res.cookie('jwt', token, { httpOnly: true })
+
+            return res.json(user);
+
+        } catch (error) {
+            return res.status(500).json(error)
+        }
+
+    }
+
+    async signIn (req: Request, res: Response) {
         const { email, password } = req.body;
 
-        const user = await usersService.findByEmail(email)
+        const user = await new usersService().findByEmail(email)
 
-        if(!user || !user?.password === null) {
-            res.status(400)
-            return res.json({
-                message: 'invalid credentials',
-                error: 'bad request'
-            });
+        try {
+            if (!user || !user?.password === null) {
+                res.status(400)
+                return res.json({
+                    message: 'invalid credentials',
+                    error: 'bad request'
+                });
+            }
+
+            if (! await bcrypt.compare(password, user.password as string)) {
+                res.status(400)
+                return res.json({
+                    message: 'invalid credentials',
+                    error: 'bad request'
+                });
+            }
+
+            let token: string = jwtToken.jwtEncoded(user.id)
+
+            res.cookie('jwt', token, { httpOnly: true })
+
+            user.password = null
+
+            return res.json(user)
+        } catch (error) {
+            return res.status(500).json(error)
         }
 
-        if(! await bcrypt.compare(password, user.password as string)) {
-            res.status(400)
-            return res.json({
-                message: 'invalid credentials',
-                error: 'bad request'
-            });
-        }
+    }
 
-        let token: string = jwtToken.jwtEncoded(user.id)
-
-        res.cookie('jwt', token, {httpOnly: true})
-
-        user.password = null
-
-        return res.json(user)
-    },
-
-    signOut: async (req: Request, res: Response) => {
+    async signOut (req: Request, res: Response) {
         res.clearCookie('jwt');
 
-        return res.json({ message: 'success'})
-    },
+        return res.json({ message: 'success' })
+    }
 
-    user: async (req: Request, res: Response) => {
+    async user (req: Request, res: Response) {
         try {
             const token = await req.cookies['jwt']
 
             let data = JSON.parse(jwtToken.jwtDecoded(token))
 
-            if(!data) {
+            if (!data) {
                 return res.json({
                     message: 'Unauthorized request',
                     error: 'bad request'
                 });
             }
-            
-            let user = await usersService.findById(data.id)
 
-            if(!user) {
+            let user = await new usersService().findbyId(data.id)
+
+            if (!user) {
                 res.status(400)
                 return res.json({
                     message: 'no user has been found',
                     error: 'bad request'
                 });
             }
- 
+
             return res.json(user)
 
         } catch {
@@ -117,12 +128,12 @@ export const UsersController = {
                 error: 'bad request'
             });
         }
-    },
+    }
 
-    deleteOne: async (req: Request, res: Response) => {
+    async deleteOne (req: Request, res: Response) {
         const token = await req.cookies['jwt']
 
-        if(!token) {
+        if (!token) {
             res.status(400)
             return res.json({
                 message: 'no token has been sent',
@@ -132,10 +143,15 @@ export const UsersController = {
 
         const data = JSON.parse(jwtToken.jwtDecoded(token))
 
-        return res.json(await usersService.deleteOne(data.id))
-    },
+        try {
+            return res.json(await new usersService().deleteOne(data.id))
+        } catch (error) {
+            return res.status(500).json(error)
+        }
+        
+    }
 
-    googleSignIn: async (req: Request, res: Response) => {
+    async googleSignIn (req: Request, res: Response) {
         const { email, picture, name } = req.body;
 
         if (!email || !picture || !name) {
@@ -146,23 +162,29 @@ export const UsersController = {
             });
         }
 
-        let user = await usersService.findByEmail(email)
+        try {
+            let user = await new usersService().findByEmail(email)
 
-        if(!user) {
-            user = await usersService.create({
-                name,
-                email,
-                password: await bcrypt.hash(String(Math.random()), 10),
-                avatarImage: picture
-            });
+            if (!user) {
+                user = await new usersService().create({
+                    name,
+                    email,
+                    password: await bcrypt.hash(String(Math.random()), 10),
+                    avatarImage: picture
+                });
+            }
+    
+            let token: string = jwtToken.jwtEncoded(user.id)
+    
+            user.password = null
+    
+            res.cookie('jwt', token, { httpOnly: true })
+    
+            return res.json(user)
+        } catch (error) {
+            return res.status(500).json(error)
         }
 
-        let token: string = jwtToken.jwtEncoded(user.id)
 
-        user.password = null
-
-        res.cookie('jwt', token, {httpOnly: true})
-
-        return res.json(user)
     }
 }

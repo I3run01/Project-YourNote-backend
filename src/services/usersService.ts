@@ -1,20 +1,20 @@
 import usersModel from '../Model/usersModel'
 import CreateUserDto from '../dto/userDTO'
 
-export const usersService = {
-    create: async  (createUserDto: CreateUserDto) => {
+export class usersService {
+    async create  (createUserDto: CreateUserDto) {
         return usersModel.create(createUserDto);
-    },
+    }
     
-    findById: async  (id: string) => {
+    async findbyId  (id: string) {
         return await usersModel.findById(id)
-    },
+    }
     
-    findByEmail: async (email: string) => {
+    async findByEmail (email: string) {
         return await usersModel.findOne({email})
-    },
-    
-    deleteOne: async  (id: string) => {
+    }
+
+    async deleteOne  (id: string) {
         return await usersModel.deleteOne({_id: id}) 
-    },
+    }
 }
