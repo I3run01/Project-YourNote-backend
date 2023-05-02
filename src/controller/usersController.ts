@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
+import { requests } from '../utils/functions'
 
 export class UsersController {
 
@@ -152,33 +153,27 @@ export class UsersController {
     }
 
     async googleSignIn (req: Request, res: Response) {
-        const { token } = req.body;
-
-        if (!email || !picture || !name) {
-            res.status(400)
-            return res.json({
-                message: 'invaid credentials',
-                error: 'bad request'
-            });
-        }
+        const { googleToken } = req.body;
 
         try {
-            let user = await new usersService().findByEmail(email)
+            let googleUser = JSON.parse(await requests.googleLogin(googleToken))
+
+            let user = await new usersService().findByEmail(googleUser.email)
 
             if (!user) {
                 user = await new usersService().create({
-                    name,
-                    email,
+                    name: googleUser.name,
+                    email: googleUser.email,
                     password: await bcrypt.hash(String(Math.random()), 10),
-                    avatarImage: picture
+                    avatarImage:googleUser.picture
                 });
             }
     
-            let token: string = jwtToken.jwtEncoded(user.id)
+            let userToken: string = jwtToken.jwtEncoded(user.id)
     
             user.password = null
     
-            res.cookie('jwt', token, { httpOnly: true })
+            res.cookie('jwt', userToken, { httpOnly: true })
     
             return res.json(user)
         } catch (error) {
