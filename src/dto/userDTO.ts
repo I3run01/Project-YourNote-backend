@@ -3,7 +3,7 @@ type CreateUserDto = {
     email: string
     password: string
     avatarImage: string | null
-    confirmationCode?: string
+    confirmationCode?: string | null
 }
 
 export default CreateUserDto

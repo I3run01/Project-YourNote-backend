@@ -11,15 +11,7 @@ export const jwtToken = {
 }
 
 export const confirmationEmailToken = {
-    jwtEncoded: (): string => {
-        const payload = {
-            num1: 123,
-            num2: 456,
-            num3: 789,
-            num4: 1011,
-        };
-
-
-        return jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {expiresIn: '10m'});
+    jwtEncoded: (email: string): string => {
+        return jwt.sign({email}, process.env.JWT_SECRET_KEY as string, {expiresIn: '10m'});
     },
 }

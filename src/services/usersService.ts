@@ -17,4 +17,11 @@ export class usersService {
     async deleteOne  (id: string) {
         return await usersModel.deleteOne({_id: id}) 
     }
+
+    async deleteConfirmationCode (id: string) {
+        await usersModel.updateOne({_id:id}, {
+            "user.confirmationCode": null
+ 
+        })
+  }
 }

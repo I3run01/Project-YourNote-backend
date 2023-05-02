@@ -6,7 +6,7 @@ type UsersType = {
     password: string | null
     avatarImage: string | null
     status: 'Pending' | 'Active' 
-    confirmationCode: String
+    confirmationCode: String | null
 }
 
 const schema = new Schema<UsersType>({
@@ -33,8 +33,7 @@ const schema = new Schema<UsersType>({
         default: 'Pending'
     },
     confirmationCode: { 
-        type: String,
-        expires: '10s',
+        type: String || null,
         unique: true 
     },
 })
