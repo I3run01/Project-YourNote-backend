@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
-import { confirmationEmailToken } from '../auth/jwtToken'
+import { utilsFn } from '../utils/functions'
 import { requests } from '../utils/functions'
 
 export class UsersController {
@@ -33,19 +33,21 @@ export class UsersController {
             });
         }
 
-        const confirtionToken = confirmationEmailToken.jwtEncoded()
-        console.log(confirtionToken)
+        const confirmationCode:string = utilsFn.generateConfirmationCode()
+        console.log(confirmationCode)
 
-        const createUserDto: CreateUserDto = {
+        const UserDto: CreateUserDto = {
             name: null,
             email,
             password: await bcrypt.hash(password, 10),
             avatarImage: null,
-            confirmationCode: '1010'
+            confirmationCode: confirmationCode
         };
 
+        utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
+
         try {
-            user = await new usersService().create(createUserDto);
+            user = await new usersService().create(UserDto);
 
             user.password = null;
 

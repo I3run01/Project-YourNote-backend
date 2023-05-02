@@ -19,13 +19,15 @@ export const requests = {
 
 export const utilsFn = {
     
-    sendConfirmationEmail(name: string, email: string, confirmationCode: string) {
+    sendConfirmationEmail(name: string | null, email: string, confirmationCode: string) {
         
         const user = process.env.EMAIL_USER;
         const pass = process.env.EMAIL_PASS;
 
+        console.log('inside the function')
+
         const transport = createTransport({
-            service: "Gmail",
+            service: "outlook",
             auth: {
                 user: user,
                 pass: pass,
@@ -33,18 +35,26 @@ export const utilsFn = {
         });
 
         try {
+            console.log('trying')
+
             transport.sendMail({
               from: user,
               to: email,
-              subject: "Please confirm your account",
-              html: `<h1>Email Confirmation</h1>
-                  <h2>Hello ${name}</h2>
-                  <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-                  <a href=http://localhost:8081/confirm/${confirmationCode}> Click here</a>
-                  </div>`,
+              subject: "yourNode Code",
+              html: `<h1>Hello ${null ? '' : user} <br/> Your code is: <strong>${confirmationCode}</strong>`,
             })
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+
+    generateConfirmationCode(): string {
+        const chars = '0123456789';
+        let result = '';
+        for (let i = 0; i < 4; i++) {
+          result += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return result;
+      }
+      
 }
