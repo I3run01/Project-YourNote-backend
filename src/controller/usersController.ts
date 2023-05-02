@@ -152,7 +152,7 @@ export class UsersController {
     }
 
     async googleSignIn (req: Request, res: Response) {
-        const { email, picture, name } = req.body;
+        const { token } = req.body;
 
         if (!email || !picture || !name) {
             res.status(400)
