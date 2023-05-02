@@ -23,5 +23,5 @@ export class usersService {
             "user.confirmationCode": null
  
         })
-  }
+    }
 }
