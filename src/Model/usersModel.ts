@@ -12,6 +12,7 @@ const schema = new Schema<UsersType>({
     email: {type: String || null, required: true},
     password: {type: String, required: true},
     avatarImage: {type: String || null, required: false},
+    status: {type: String, required: true}
 })
 
 const modelName: string = 'users'
