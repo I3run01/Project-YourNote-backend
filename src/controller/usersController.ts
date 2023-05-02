@@ -17,7 +17,7 @@ export class UsersController {
         if (!email || !password) {
             res.status(400)
             return res.json({
-                message: 'invaid credentials',
+                message: 'invalid credentials',
                 error: 'bad request'
             });
         }
@@ -155,9 +155,11 @@ export class UsersController {
     async googleSignIn (req: Request, res: Response) {
         const { googleToken } = req.body;
 
+        if(!googleToken) return res.status(400).send('no token sent')
+
         try {
             let googleUser = JSON.parse(await requests.googleLogin(googleToken))
-
+ 
             let user = await new usersService().findByEmail(googleUser.email)
 
             if (!user) {
@@ -174,12 +176,11 @@ export class UsersController {
             user.password = null
     
             res.cookie('jwt', userToken, { httpOnly: true })
-    
+            
             return res.json(user)
         } catch (error) {
+            console.log(error)
             return res.status(500).json(error)
         }
-
-
     }
 }
