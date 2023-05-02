@@ -33,7 +33,8 @@ const schema = new Schema<UsersType>({
         default: 'Pending'
     },
     confirmationCode: { 
-        type: String, 
+        type: String,
+        expires: '10s',
         unique: true 
     },
 })

@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
+import { confirmationEmailToken } from '../auth/jwtToken'
 import { requests } from '../utils/functions'
 
 export class UsersController {
@@ -32,11 +33,15 @@ export class UsersController {
             });
         }
 
+        const confirtionToken = confirmationEmailToken.jwtEncoded()
+        console.log(confirtionToken)
+
         const createUserDto: CreateUserDto = {
             name: null,
             email,
             password: await bcrypt.hash(password, 10),
             avatarImage: null,
+            confirmationCode: '1010'
         };
 
         try {
@@ -167,7 +172,7 @@ export class UsersController {
                     name: googleUser.name,
                     email: googleUser.email,
                     password: await bcrypt.hash(String(Math.random()), 10),
-                    avatarImage:googleUser.picture
+                    avatarImage:googleUser.picture,
                 });
             }
     
