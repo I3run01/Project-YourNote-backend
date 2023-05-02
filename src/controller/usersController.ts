@@ -189,4 +189,19 @@ export class UsersController {
             return res.status(500).json(error)
         }
     }
+
+    async emailConfirmation (req: Request, res: Response) {
+        const { tokenConfirmation } = req.params
+
+        let data = JSON.parse(confirmationEmailToken.jwtDecoded(tokenConfirmation))
+
+        if (!data) {
+            return res.json({
+                message: 'Unauthorized request',
+                error: 'bad request'
+            });
+        }
+
+        let user = await new usersService().findByEmail(data.email)
+    }
 }

@@ -40,7 +40,7 @@ export const utilsFn = {
               html: `<h1>Email Confirmation</h1>
               <h2>Hello ${name ? name : ''}</h2>
               <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-              <a href=http://localhost:8081/confirm/${confirmationCode}> Click here</a>
+              <a href=http://localhost:3000/emailConfirmation/${confirmationCode}> Click here</a>
               </div>`,
             })
         } catch (error) {
