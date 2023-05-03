@@ -37,12 +37,10 @@ export class UsersController {
             let newUser = await new usersService().create(UserDto);
 
             const confirmationCode:string = confirmationEmailToken.jwtEncoded(newUser.id)
-
-            console.log(confirmationCode)
             
             newUser.password = null;
 
-            //utilsFn.jsonConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
+            utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
 
             return res.json(newUser);
 
@@ -59,19 +57,27 @@ export class UsersController {
 
         try {
             if (!user || !user?.password === null) return res.status(400).json({
-                message: 'invalid credentials',
+                message: 'no user found',
             });
 
-            else if (user.status !== "Active") return res.status(401).json({
-                message: "Pending Account. Please Verify Your Email!",
-            });
             
-            else if (! await bcrypt.compare(password, user.password as string)) return res.status(400).json({
+            else if (! await bcrypt.compare(password, user.password as string)) return res.status(401).json({
                 message: 'invalid credentials',
             });
 
-            let token: string = jwtToken.jwtEncoded(user.id)
+            else if (user.status !== "Active") {
 
+                const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
+                 
+                //utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
+
+                return res.status(401).json({
+                    message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
+                })
+            }
+            
+            let token: string = jwtToken.jwtEncoded(user.id)
+            
             res.cookie('jwt', token, { httpOnly: true })
 
             user.password = null
@@ -104,18 +110,26 @@ export class UsersController {
 
             if (!user) {
                 return res.status(400).json({
-                  message: "Pending Account. Please Verify Your Email!",
+                  message: "No user found",
                 });
             }
 
-            if (user.status !== "Active") return res.status(401).json({
-                  message: "Pending Account. Please Verify Your Email!",
-            });
+            if (user.status !== "Active") {
+
+                const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
+                 
+                //utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
+                
+                return res.status(401).json({
+                      message: "Pending Account. Please Verify Your Email!. We sent a new link to your email",
+                });
+            }
+            
 
             return res.json(user)
 
         } catch {
-            return res.status(400).json({
+            return res.status(401).json({
                 message: 'Unauthorized request',
             });
         }
@@ -124,14 +138,10 @@ export class UsersController {
     async deleteOne (req: Request, res: Response) {
         const token = await req.cookies['jwt']
 
-        if (!token) {
-            res.status(400)
-            return res.json({
-                message: 'no token has been sent',
-                error: 'bad request'
-            })
-        }
-
+        if (!token) return res.status(400).json({
+            message: 'no token has been sent',
+        })
+        
         const data = JSON.parse(jwtToken.jwtDecoded(token))
 
         try {
@@ -145,7 +155,7 @@ export class UsersController {
     async googleSignIn (req: Request, res: Response) {
         const { googleToken } = req.body;
 
-        if(!googleToken) return res.status(400).json('no token sent')
+        if(!googleToken) return res.status(400).json({message: 'no token sent'})
 
         try {
             let googleUser = JSON.parse(await requests.googleLogin(googleToken))
@@ -176,24 +186,17 @@ export class UsersController {
     async emailConfirmation (req: Request, res: Response) {
         const { tokenConfirmation } = req.params
 
-        console.log(tokenConfirmation)
-
         try {
             let data = JSON.parse(confirmationEmailToken.jwtDecoded(tokenConfirmation))
     
-            if (!data) {
-                return res.status(400).json({
-                    message: 'Unauthorized request',
-                    error: 'bad request'
-                });
-            }
-
-            console.log(data)
+            if (!data) return res.status(400).json({
+                message: 'invalid token',
+            });
             
             let user = await new usersService().findbyId(data.id)    
 
             if (!user) return res.status(400).json({
-                    message: 'no user found',
+                message: 'no user found',
             });
 
             await new usersService().updateStatus(user.id, 'Active')
