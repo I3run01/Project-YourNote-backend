@@ -45,9 +45,7 @@ export class UsersController {
             let newUser = await new usersService().create(UserDto);
 
             const confirmationCode:string = confirmationEmailToken.jwtEncoded(newUser.id)
-
-            console.log(newUser.id)
-
+            
             newUser.password = null;
 
             //utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
@@ -194,18 +192,25 @@ export class UsersController {
             let data = JSON.parse(confirmationEmailToken.jwtDecoded(tokenConfirmation))
     
             if (!data) {
-                return res.json({
+                return res.status(400).json({
                     message: 'Unauthorized request',
                     error: 'bad request'
                 });
             }
+            
+            let user = await new usersService().findbyId(data.id)
 
-            let token: string = jwtToken.jwtEncoded(data.id)
+            if (!user) {
+                return res.status(400).json({
+                    message: 'no user found',
+                    error: 'bad request'
+                });
+            }
+
+            let token: string = jwtToken.jwtEncoded(user.id)
 
             res.cookie('jwt', token, { httpOnly: true })
     
-            let user = await new usersService().findbyId(data.id)
-
             return res.json(user)
         } catch (error) {
             return res.status(500).json(error)
