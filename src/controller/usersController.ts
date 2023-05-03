@@ -44,7 +44,7 @@ export class UsersController {
             confirmationCode: confirmationCode
         };
 
-        utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
+        //utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
 
         try {
             user = await new usersService().create(UserDto);
