@@ -18,10 +18,6 @@ export class usersService {
         return await usersModel.deleteOne({_id: id}) 
     }
 
-    async findByConfirmationCode(code: string) {
-        return await usersModel.findOne({confirmationCode: code})
-    }
-
     async updateStatus(id: string) {
         return await usersModel.updateOne({_id: id}, {status: 'Active'})
     }

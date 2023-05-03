@@ -34,28 +34,25 @@ export class UsersController {
             });
         }
 
-        const confirmationCode:string = confirmationEmailToken.jwtEncoded(email)
-
         const UserDto: CreateUserDto = {
             name: null,
             email,
             password: await bcrypt.hash(password, 10),
             avatarImage: null,
-            confirmationCode: confirmationCode
         };
 
-        //utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
-
         try {
-            user = await new usersService().create(UserDto);
+            let newUser = await new usersService().create(UserDto);
 
-            user.password = null;
+            const confirmationCode:string = confirmationEmailToken.jwtEncoded(newUser.id)
 
-            let token: string = jwtToken.jwtEncoded(user.id)
+            console.log(newUser.id)
 
-            res.cookie('jwt', token, { httpOnly: true })
+            newUser.password = null;
 
-            return res.json(user);
+            //utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
+
+            return res.json(newUser);
 
         } catch (error) {
             return res.status(500).json(error)
@@ -202,8 +199,14 @@ export class UsersController {
                     error: 'bad request'
                 });
             }
+
+            let token: string = jwtToken.jwtEncoded(data.id)
+
+            res.cookie('jwt', token, { httpOnly: true })
     
-            return await new usersService().findByConfirmationCode(data.email)
+            let user = await new usersService().findbyId(data.id)
+
+            return res.json(user)
         } catch (error) {
             return res.status(500).json(error)
         }

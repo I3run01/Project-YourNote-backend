@@ -6,7 +6,6 @@ type UsersType = {
     password: string | null
     avatarImage: string | null
     status: 'Pending' | 'Active' 
-    confirmationCode: String | null
 }
 
 const schema = new Schema<UsersType>({
@@ -31,10 +30,6 @@ const schema = new Schema<UsersType>({
         required: true,
         enum: ['Pending', 'Active'], 
         default: 'Pending'
-    },
-    confirmationCode: { 
-        type: String || null,
-        unique: true 
     },
 })
 
