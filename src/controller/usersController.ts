@@ -22,6 +22,18 @@ export class UsersController {
 
         let user = await new usersService().findByEmail(email);
 
+        if (user?.status !== "Active" && user) {
+
+            const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
+             
+            utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
+
+            return res.status(401).json({
+                message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
+            })
+        }
+        
+
         if (user) return res.status(400).json({
             message: 'user already exists'
         });
@@ -61,7 +73,7 @@ export class UsersController {
             });
 
             
-            else if (! await bcrypt.compare(password, user.password as string)) return res.status(401).json({
+            else if (! await bcrypt.compare(password, user.password as string)) return res.status(401).send({
                 message: 'invalid credentials',
             });
 
@@ -71,7 +83,7 @@ export class UsersController {
                  
                 utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
 
-                return res.status(401).json({
+                return res.status(412).send({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
                 })
             }
