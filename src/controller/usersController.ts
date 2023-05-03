@@ -83,7 +83,7 @@ export class UsersController {
                  
                 utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
 
-                return res.status(412).send({
+                return res.status(401).send({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
                 })
             }
