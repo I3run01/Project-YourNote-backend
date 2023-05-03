@@ -193,15 +193,19 @@ export class UsersController {
     async emailConfirmation (req: Request, res: Response) {
         const { tokenConfirmation } = req.params
 
-        let data = JSON.parse(confirmationEmailToken.jwtDecoded(tokenConfirmation))
-
-        if (!data) {
-            return res.json({
-                message: 'Unauthorized request',
-                error: 'bad request'
-            });
+        try {
+            let data = JSON.parse(confirmationEmailToken.jwtDecoded(tokenConfirmation))
+    
+            if (!data) {
+                return res.json({
+                    message: 'Unauthorized request',
+                    error: 'bad request'
+                });
+            }
+    
+            return await new usersService().findByConfirmationCode(data.email)
+        } catch (error) {
+            return res.status(500).json(error)
         }
-
-        let user = await new usersService().findByEmail(data.email)
     }
 }
