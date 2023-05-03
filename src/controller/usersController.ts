@@ -16,23 +16,15 @@ export class UsersController {
     async signUp(req: Request, res: Response) {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            res.status(400)
-            return res.json({
-                message: 'invalid credentials',
-                error: 'bad request'
-            });
-        }
+        if (!email || !password) return res.status(400).json({ 
+            message: 'invalide credentials'
+        });
 
         let user = await new usersService().findByEmail(email);
 
-        if (user) {
-            res.status(400)
-            return res.json({
-                message: 'user already exists',
-                error: 'bad request'
-            });
-        }
+        if (user) return res.status(400).json({
+            message: 'user already exists'
+        });
 
         const UserDto: CreateUserDto = {
             name: null,
@@ -45,10 +37,12 @@ export class UsersController {
             let newUser = await new usersService().create(UserDto);
 
             const confirmationCode:string = confirmationEmailToken.jwtEncoded(newUser.id)
+
+            console.log(confirmationCode)
             
             newUser.password = null;
 
-            //utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
+            //utilsFn.jsonConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
 
             return res.json(newUser);
 
@@ -64,21 +58,17 @@ export class UsersController {
         const user = await new usersService().findByEmail(email)
 
         try {
-            if (!user || !user?.password === null) {
-                res.status(400)
-                return res.json({
-                    message: 'invalid credentials',
-                    error: 'bad request'
-                });
-            }
+            if (!user || !user?.password === null) return res.status(400).json({
+                message: 'invalid credentials',
+            });
 
-            if (! await bcrypt.compare(password, user.password as string)) {
-                res.status(400)
-                return res.json({
-                    message: 'invalid credentials',
-                    error: 'bad request'
-                });
-            }
+            else if (user.status !== "Active") return res.status(401).json({
+                message: "Pending Account. Please Verify Your Email!",
+            });
+            
+            else if (! await bcrypt.compare(password, user.password as string)) return res.status(400).json({
+                message: 'invalid credentials',
+            });
 
             let token: string = jwtToken.jwtEncoded(user.id)
 
@@ -105,30 +95,28 @@ export class UsersController {
 
             let data = JSON.parse(jwtToken.jwtDecoded(token))
 
-            if (!data) {
-                return res.json({
-                    message: 'Unauthorized request',
-                    error: 'bad request'
-                });
-            }
+            if (!data) return res.status(400).json({
+                message: 'Unauthorized request',
+            });
+            
 
             let user = await new usersService().findbyId(data.id)
 
             if (!user) {
-                res.status(400)
-                return res.json({
-                    message: 'no user has been found',
-                    error: 'bad request'
+                return res.status(400).json({
+                  message: "Pending Account. Please Verify Your Email!",
                 });
             }
+
+            if (user.status !== "Active") return res.status(401).json({
+                  message: "Pending Account. Please Verify Your Email!",
+            });
 
             return res.json(user)
 
         } catch {
-            res.status(400)
-            return res.json({
+            return res.status(400).json({
                 message: 'Unauthorized request',
-                error: 'bad request'
             });
         }
     }
@@ -157,7 +145,7 @@ export class UsersController {
     async googleSignIn (req: Request, res: Response) {
         const { googleToken } = req.body;
 
-        if(!googleToken) return res.status(400).send('no token sent')
+        if(!googleToken) return res.status(400).json('no token sent')
 
         try {
             let googleUser = JSON.parse(await requests.googleLogin(googleToken))
@@ -188,6 +176,8 @@ export class UsersController {
     async emailConfirmation (req: Request, res: Response) {
         const { tokenConfirmation } = req.params
 
+        console.log(tokenConfirmation)
+
         try {
             let data = JSON.parse(confirmationEmailToken.jwtDecoded(tokenConfirmation))
     
@@ -197,15 +187,14 @@ export class UsersController {
                     error: 'bad request'
                 });
             }
-            
-            let user = await new usersService().findbyId(data.id)
 
-            if (!user) {
-                return res.status(400).json({
+            console.log(data)
+            
+            let user = await new usersService().findbyId(data.id)    
+
+            if (!user) return res.status(400).json({
                     message: 'no user found',
-                    error: 'bad request'
-                });
-            }
+            });
 
             await new usersService().updateStatus(user.id, 'Active')
 
