@@ -18,7 +18,7 @@ export class usersService {
         return await usersModel.deleteOne({_id: id}) 
     }
 
-    async updateStatus(id: string) {
-        return await usersModel.updateOne({_id: id}, {status: 'Active'})
+    async updateStatus(id: string, status: 'Active' | 'Pending') {
+        return await usersModel.updateOne({_id: id}, {status})
     }
 }
