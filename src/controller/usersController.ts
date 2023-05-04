@@ -258,34 +258,35 @@ export class UsersController {
       };
 
     async updatePasswordWithToken(req: Request, res: Response) {
-    const { password } = req.body;
+
+        const { password } = req.body;
+        const { token } = req.params
     
-    try {
-        let hashPassword:string = await bcrypt.hash(String(password), 10)
+        try {
 
-        const token = await req.cookies['jwt']
+            let hashPassword:string = await bcrypt.hash(String(password), 10)
+            
+            let data = JSON.parse(jwtToken.jwtDecoded(token))
 
-        let data = JSON.parse(jwtToken.jwtDecoded(token))
+            if (!data) return res.status(401).json({
+                message: 'Unauthorized request',
+            });
 
-        if (!data) return res.status(401).json({
-            message: 'Unauthorized request',
-        });
+            let user = await new usersService().findbyId(data.id)
 
-        let user = await new usersService().findbyId(data.id)
+            if (!user) {
+                return res.status(400).json({ message: 'no user found' });
+            }
+        
+            await new usersService().updatePassword(user.id, hashPassword)
+        
+            return res.status(200).json({ message: 'Password updated successfully' });
 
-        if (!user) {
-            return res.status(400).json({ message: 'no user found' });
+        } catch (error) {
+
+            console.error(error);
+
+            return res.status(500).json(error);
         }
-    
-        await new usersService().updatePassword(user.id, hashPassword)
-    
-        return res.status(200).json({ message: 'Password updated successfully' });
-
-    } catch (error) {
-
-        console.error(error);
-
-        return res.status(500).json(error);
-    }
     };
 }
