@@ -81,9 +81,9 @@ export class UsersController {
 
                 const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
                  
-                utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
+                //utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
 
-                return res.status(401).send({
+                return res.status(410).send({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
                 })
             }
