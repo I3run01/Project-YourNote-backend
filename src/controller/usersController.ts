@@ -128,7 +128,7 @@ export class UsersController {
 
             if (user.status !== "Active") {
 
-                const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
+                //const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
                  
                 utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
                 
