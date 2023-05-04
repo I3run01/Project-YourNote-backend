@@ -189,7 +189,7 @@ export class UsersController {
         const data = JSON.parse(jwtToken.jwtDecoded(token))
 
         try {
-            return res.json(await new usersService().deleteOne(data.id))
+            return res.json(await new usersService().deleteUser(data.id))
         } catch (error) {
             return res.status(500).json(error)
         }

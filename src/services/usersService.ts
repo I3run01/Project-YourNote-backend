@@ -14,7 +14,7 @@ export class usersService {
         return await usersModel.findOne({email})
     }
 
-    async deleteOne  (id: string) {
+    async deleteUser  (id: string) {
         return await usersModel.deleteOne({_id: id}) 
     }
 
