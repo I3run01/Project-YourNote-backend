@@ -16,7 +16,6 @@ exports.UsersController = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const usersService_1 = require("../services/usersService");
 const jwtToken_1 = require("../auth/jwtToken");
-const jwtToken_2 = require("../auth/jwtToken");
 const functions_1 = require("../utils/functions");
 const functions_2 = require("../utils/functions");
 class UsersController {
@@ -32,7 +31,7 @@ class UsersController {
                 });
             let user = yield new usersService_1.usersService().findByEmail(email);
             if ((user === null || user === void 0 ? void 0 : user.status) !== "Active" && user) {
-                const confirmationCode = jwtToken_2.newToken.jwtEncoded(user.id);
+                const confirmationCode = jwtToken_1.jwtToken.jwtEncoded(user.id);
                 const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
                 console.log(confirmationCode);
                 functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink);
@@ -52,7 +51,7 @@ class UsersController {
             };
             try {
                 let newUser = yield new usersService_1.usersService().create(UserDto);
-                const confirmationCode = jwtToken_2.newToken.jwtEncoded(newUser.id);
+                const confirmationCode = jwtToken_1.jwtToken.jwtEncoded(newUser.id);
                 const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
                 functions_1.utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, emailConfirmationLink);
                 return res.json(newUser);
@@ -76,7 +75,7 @@ class UsersController {
                         message: 'invalid credentials',
                     });
                 else if (user.status !== "Active") {
-                    const confirmationCode = jwtToken_2.newToken.jwtEncoded(user.id);
+                    const confirmationCode = jwtToken_1.jwtToken.jwtEncoded(user.id);
                     console.log(confirmationCode);
                     const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
                     functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink);
@@ -110,7 +109,7 @@ class UsersController {
                     });
                 }
                 if (user.status !== "Active") {
-                    const confirmationCode = jwtToken_2.newToken.jwtEncoded(user.id);
+                    const confirmationCode = jwtToken_1.jwtToken.jwtEncoded(user.id);
                     functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, confirmationCode);
                     return res.status(401).json({
                         message: "Pending Account. Please Verify Your Email!. We sent a new link to your email",
@@ -129,7 +128,7 @@ class UsersController {
         return __awaiter(this, void 0, void 0, function* () {
             const { token } = req.params;
             try {
-                let data = JSON.parse(jwtToken_2.newToken.jwtDecoded(token));
+                let data = JSON.parse(jwtToken_1.jwtToken.jwtDecoded(token));
                 if (!data)
                     return res.status(400).json({
                         message: 'invalid token',
@@ -209,7 +208,7 @@ class UsersController {
                 if (!user) {
                     return res.status(404).json({ message: 'User not found' });
                 }
-                const resetPasswordToken = jwtToken_2.newToken.jwtEncoded(user.id);
+                const resetPasswordToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
                 const resetLink = `http://example.com/reset-password?token=${resetPasswordToken}`;
                 functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, resetLink);
                 return res.status(200).json({ message: 'Password reset link sent to your email' });

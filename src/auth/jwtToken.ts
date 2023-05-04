@@ -9,14 +9,3 @@ export const jwtToken = {
         return JSON.stringify(jwt.verify(token, process.env.JWT_SECRET_KEY as string))
     }
 }
-
-export const newToken = {
-    jwtEncoded: (id: string): string => {
-        return jwt.sign({id}, process.env.JWT_SECRET_KEY as string, {expiresIn: '10m'});
-    },
-
-    jwtDecoded: (token: string): string => {
-        return JSON.stringify(jwt.verify(token, process.env.JWT_SECRET_KEY as string));
-    },
-    
-}

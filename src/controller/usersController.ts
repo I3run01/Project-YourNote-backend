@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs'
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
-import { newToken } from '../auth/jwtToken'
 import { utilsFn } from '../utils/functions'
 import { requests } from '../utils/functions'
 
@@ -24,7 +23,7 @@ export class UsersController {
 
         if (user?.status !== "Active" && user) {
 
-            const confirmationCode:string = newToken.jwtEncoded(user.id)
+            const confirmationCode:string = jwtToken.jwtEncoded(user.id)
 
             const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
 
@@ -52,7 +51,7 @@ export class UsersController {
         try {
             let newUser = await new usersService().create(UserDto);
 
-            const confirmationCode:string = newToken.jwtEncoded(newUser.id)
+            const confirmationCode:string = jwtToken.jwtEncoded(newUser.id)
 
             const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
              
@@ -83,7 +82,7 @@ export class UsersController {
 
             else if (user.status !== "Active") {
 
-                const confirmationCode:string = newToken.jwtEncoded(user.id)
+                const confirmationCode:string = jwtToken.jwtEncoded(user.id)
 
                 console.log(confirmationCode)
 
@@ -130,7 +129,7 @@ export class UsersController {
 
             if (user.status !== "Active") {
 
-                const confirmationCode:string = newToken.jwtEncoded(user.id)
+                const confirmationCode:string = jwtToken.jwtEncoded(user.id)
                  
                 utilsFn.sendConfirmationEmail(user.name, user.email, confirmationCode)
                 
@@ -153,7 +152,7 @@ export class UsersController {
         const { token } = req.params
 
         try {
-            let data = JSON.parse(newToken.jwtDecoded(token))
+            let data = JSON.parse(jwtToken.jwtDecoded(token))
     
             if (!data) return res.status(400).json({
                 message: 'invalid token',
@@ -245,7 +244,7 @@ export class UsersController {
             return res.status(404).json({ message: 'User not found' });
           }
       
-          const resetPasswordToken = newToken.jwtEncoded(user.id);
+          const resetPasswordToken = jwtToken.jwtEncoded(user.id);
 
           const resetLink = `http://example.com/reset-password?token=${resetPasswordToken}`;
       
