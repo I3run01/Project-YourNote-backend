@@ -27,6 +27,8 @@ export class UsersController {
             const confirmationCode:string = newToken.jwtEncoded(user.id)
 
             const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
+
+            console.log(confirmationCode)
              
             utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink)
 
@@ -82,6 +84,8 @@ export class UsersController {
             else if (user.status !== "Active") {
 
                 const confirmationCode:string = newToken.jwtEncoded(user.id)
+
+                console.log(confirmationCode)
 
                 const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
                  
