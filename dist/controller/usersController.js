@@ -34,6 +34,7 @@ class UsersController {
             if ((user === null || user === void 0 ? void 0 : user.status) !== "Active" && user) {
                 const confirmationCode = jwtToken_2.newToken.jwtEncoded(user.id);
                 const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
+                console.log(confirmationCode);
                 functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink);
                 return res.status(401).json({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
@@ -76,6 +77,7 @@ class UsersController {
                     });
                 else if (user.status !== "Active") {
                     const confirmationCode = jwtToken_2.newToken.jwtEncoded(user.id);
+                    console.log(confirmationCode);
                     const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
                     functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink);
                     return res.status(410).send({
