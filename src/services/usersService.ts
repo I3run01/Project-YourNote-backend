@@ -21,4 +21,8 @@ export class usersService {
     async updateStatus(id: string, status: 'Active' | 'Pending') {
         return await usersModel.updateOne({_id: id}, {status})
     }
+
+    async updatePassword(id: string, password: string) {
+        return await usersModel.updateOne({_id: id}, {password})
+    }
 }

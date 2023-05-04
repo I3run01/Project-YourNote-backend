@@ -19,7 +19,7 @@ export const requests = {
 
 export const utilsFn = {
     
-    sendConfirmationEmail(name: string | null, email: string, confirmationCode: string) {
+    sendConfirmationEmail( name: string | null, email: string, link: string) {
         
         const user = process.env.EMAIL_USER;
         const pass = process.env.EMAIL_PASS;
@@ -40,7 +40,7 @@ export const utilsFn = {
               html: `<h1>Email Confirmation</h1>
               <h2>Hello ${name ? name : ''}</h2>
               <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-              <a href=http://localhost:3000/emailConfirmation/${confirmationCode}> Click here</a>
+              <a href=${link}> Click here</a>
               </div>`,
             })
         } catch (error) {

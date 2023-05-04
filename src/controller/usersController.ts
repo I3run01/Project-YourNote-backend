@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { usersService } from '../services/usersService';
 import CreateUserDto from '../dto/userDTO'
 import { jwtToken } from '../auth/jwtToken'
-import { confirmationEmailToken } from '../auth/jwtToken'
+import { newToken } from '../auth/jwtToken'
 import { utilsFn } from '../utils/functions'
 import { requests } from '../utils/functions'
 
@@ -24,9 +24,11 @@ export class UsersController {
 
         if (user?.status !== "Active" && user) {
 
-            const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
+            const confirmationCode:string = newToken.jwtEncoded(user.id)
+
+            const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
              
-            utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
+            utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink)
 
             return res.status(401).json({
                 message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
@@ -48,11 +50,11 @@ export class UsersController {
         try {
             let newUser = await new usersService().create(UserDto);
 
-            const confirmationCode:string = confirmationEmailToken.jwtEncoded(newUser.id)
-            
-            newUser.password = null;
+            const confirmationCode:string = newToken.jwtEncoded(newUser.id)
 
-            utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, confirmationCode)
+            const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
+             
+            utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, emailConfirmationLink)
 
             return res.json(newUser);
 
@@ -79,9 +81,11 @@ export class UsersController {
 
             else if (user.status !== "Active") {
 
-                const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
+                const confirmationCode:string = newToken.jwtEncoded(user.id)
+
+                const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
                  
-                utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
+                utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink)
 
                 return res.status(410).send({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
@@ -101,19 +105,13 @@ export class UsersController {
 
     }
 
-    async signOut (req: Request, res: Response) {
-        res.clearCookie('jwt');
-
-        return res.json({ message: 'success' })
-    }
-
     async user (req: Request, res: Response) {
         try {
             const token = await req.cookies['jwt']
 
             let data = JSON.parse(jwtToken.jwtDecoded(token))
 
-            if (!data) return res.status(400).json({
+            if (!data) return res.status(401).json({
                 message: 'Unauthorized request',
             });
             
@@ -128,9 +126,9 @@ export class UsersController {
 
             if (user.status !== "Active") {
 
-                //const confirmationCode:string = confirmationEmailToken.jwtEncoded(user.id)
+                const confirmationCode:string = newToken.jwtEncoded(user.id)
                  
-                utilsFn.sendConfirmationEmail(user.name, user.email, 'confirmationCode')
+                utilsFn.sendConfirmationEmail(user.name, user.email, confirmationCode)
                 
                 return res.status(401).json({
                       message: "Pending Account. Please Verify Your Email!. We sent a new link to your email",
@@ -145,6 +143,40 @@ export class UsersController {
                 message: 'Unauthorized request',
             });
         }
+    }
+
+    async emailConfirmation (req: Request, res: Response) {
+        const { token } = req.params
+
+        try {
+            let data = JSON.parse(newToken.jwtDecoded(token))
+    
+            if (!data) return res.status(400).json({
+                message: 'invalid token',
+            });
+            
+            let user = await new usersService().findbyId(data.id)    
+
+            if (!user) return res.status(400).json({
+                message: 'no user found',
+            });
+
+            await new usersService().updateStatus(user.id, 'Active')
+
+            let userToken: string = jwtToken.jwtEncoded(user.id)
+
+            res.cookie('jwt', userToken, { httpOnly: true })
+    
+            return res.json(user)
+        } catch (error) {
+            return res.status(500).json(error)
+        }
+    }
+
+    async signOut (req: Request, res: Response) {
+        res.clearCookie('jwt');
+
+        return res.json({ message: 'success' })
     }
 
     async deleteOne (req: Request, res: Response) {
@@ -195,31 +227,62 @@ export class UsersController {
         }
     }
 
-    async emailConfirmation (req: Request, res: Response) {
-        const { tokenConfirmation } = req.params
+    async sendPasswordResetLink (req: Request, res: Response) {
+        const { email } = req.body;
 
+        if(!email) return res.status(400).send({
+            message: 'no email received'
+        })
+      
         try {
-            let data = JSON.parse(confirmationEmailToken.jwtDecoded(tokenConfirmation))
-    
-            if (!data) return res.status(400).json({
-                message: 'invalid token',
-            });
-            
-            let user = await new usersService().findbyId(data.id)    
+          const user = await new usersService().findByEmail(email);
 
-            if (!user) return res.status(400).json({
-                message: 'no user found',
-            });
+          if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+          }
+      
+          const resetPasswordToken = newToken.jwtEncoded(user.id);
 
-            await new usersService().updateStatus(user.id, 'Active')
+          const resetLink = `http://example.com/reset-password?token=${resetPasswordToken}`;
+      
+          utilsFn.sendConfirmationEmail(user.name, user.email, resetLink)
 
-            let token: string = jwtToken.jwtEncoded(user.id)
-
-            res.cookie('jwt', token, { httpOnly: true })
-    
-            return res.json(user)
+          return res.status(200).json({ message: 'Password reset link sent to your email' });
         } catch (error) {
-            return res.status(500).json(error)
+            console.error(error);
+            return res.status(500).json(error);
         }
+      };
+
+    async updatePasswordWithToken(req: Request, res: Response) {
+    const { password } = req.body;
+    
+    try {
+        let hashPassword:string = await bcrypt.hash(String(password), 10)
+
+        const token = await req.cookies['jwt']
+
+        let data = JSON.parse(jwtToken.jwtDecoded(token))
+
+        if (!data) return res.status(401).json({
+            message: 'Unauthorized request',
+        });
+
+        let user = await new usersService().findbyId(data.id)
+
+        if (!user) {
+            return res.status(400).json({ message: 'no user found' });
+        }
+    
+        await new usersService().updatePassword(user.id, hashPassword)
+    
+        return res.status(200).json({ message: 'Password updated successfully' });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json(error);
     }
+    };
 }

@@ -10,7 +10,7 @@ export const jwtToken = {
     }
 }
 
-export const confirmationEmailToken = {
+export const newToken = {
     jwtEncoded: (id: string): string => {
         return jwt.sign({id}, process.env.JWT_SECRET_KEY as string, {expiresIn: '10m'});
     },
