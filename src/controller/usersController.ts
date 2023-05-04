@@ -90,7 +90,7 @@ export class UsersController {
                  
                 utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink)
 
-                return res.status(410).send({
+                return res.status(401).send({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
                 })
             }
@@ -238,6 +238,7 @@ export class UsersController {
         })
       
         try {
+
           const user = await new usersService().findByEmail(email);
 
           if (!user) {
@@ -246,7 +247,9 @@ export class UsersController {
       
           const resetPasswordToken = jwtToken.jwtEncoded(user.id);
 
-          const resetLink = `http://example.com/reset-password?token=${resetPasswordToken}`;
+          const resetLink = `http://example.com/reset-password/${resetPasswordToken}`;
+
+          console.log(resetPasswordToken)
       
           utilsFn.sendConfirmationEmail(user.name, user.email, resetLink)
 

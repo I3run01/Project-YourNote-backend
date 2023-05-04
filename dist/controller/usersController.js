@@ -79,7 +79,7 @@ class UsersController {
                     console.log(confirmationCode);
                     const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
                     functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink);
-                    return res.status(410).send({
+                    return res.status(401).send({
                         message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
                     });
                 }
@@ -209,7 +209,8 @@ class UsersController {
                     return res.status(404).json({ message: 'User not found' });
                 }
                 const resetPasswordToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-                const resetLink = `http://example.com/reset-password?token=${resetPasswordToken}`;
+                const resetLink = `http://example.com/reset-password/${resetPasswordToken}`;
+                console.log(resetPasswordToken);
                 functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, resetLink);
                 return res.status(200).json({ message: 'Password reset link sent to your email' });
             }
@@ -223,9 +224,9 @@ class UsersController {
     updatePasswordWithToken(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { password } = req.body;
+            const { token } = req.params;
             try {
                 let hashPassword = yield bcryptjs_1.default.hash(String(password), 10);
-                const token = yield req.cookies['jwt'];
                 let data = JSON.parse(jwtToken_1.jwtToken.jwtDecoded(token));
                 if (!data)
                     return res.status(401).json({

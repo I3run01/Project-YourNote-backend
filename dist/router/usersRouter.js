@@ -11,7 +11,7 @@ router.post('/signin', new usersController_1.UsersController().signIn);
 router.post('/signup', new usersController_1.UsersController().signUp);
 router.post('/google-signin', new usersController_1.UsersController().googleSignIn);
 router.post('/forgot-password', new usersController_1.UsersController().sendPasswordResetLink);
-router.post('/reset-password', new usersController_1.UsersController().updatePasswordWithToken);
+router.post('/reset-password/:token', new usersController_1.UsersController().updatePasswordWithToken);
 router.delete('', new usersController_1.UsersController().deleteOne);
 router.delete('', new usersController_1.UsersController().deleteOne);
 exports.default = router;
