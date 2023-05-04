@@ -5,7 +5,7 @@ const router = Router()
 
 router.get('/ping', new UsersController().ping)
 router.get('/signout', new UsersController().signOut)
-router.get('/email-confirm/:token', new UsersController().emailConfirmation)
+router.get('/confirm-email/:token', new UsersController().emailConfirmation)
 router.get('', new UsersController().user)
 router.post('/signin', new UsersController().signIn)
 router.post('/signup', new UsersController().signUp)
