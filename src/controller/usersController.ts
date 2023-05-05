@@ -284,8 +284,10 @@ export class UsersController {
             }
         
             await new usersService().updatePassword(user.id, hashPassword)
+
+            user.password = null
         
-            return res.status(200).json({ message: 'Password updated successfully' });
+            return res.json(user);
 
         } catch (error) {
 

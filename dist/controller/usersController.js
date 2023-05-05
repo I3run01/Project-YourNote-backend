@@ -239,7 +239,8 @@ class UsersController {
                     return res.status(400).json({ message: 'no user found' });
                 }
                 yield new usersService_1.usersService().updatePassword(user.id, hashPassword);
-                return res.status(200).json({ message: 'Password updated successfully' });
+                user.password = null;
+                return res.json(user);
             }
             catch (error) {
                 console.error(error);
