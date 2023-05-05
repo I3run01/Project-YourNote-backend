@@ -242,6 +242,7 @@ class UsersController {
                 user.password = null;
                 yield new usersService_1.usersService().updateStatus(user.id, 'Active');
                 let cookieToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
+                console.log(cookieToken);
                 res.cookie('jwt', cookieToken, { httpOnly: true });
                 return res.json(user);
             }

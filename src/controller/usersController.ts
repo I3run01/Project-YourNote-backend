@@ -290,6 +290,8 @@ export class UsersController {
             await new usersService().updateStatus(user.id, 'Active')
 
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
+
+            console.log(cookieToken)
             
             res.cookie('jwt', cookieToken, { httpOnly: true })
         
