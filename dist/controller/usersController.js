@@ -240,6 +240,7 @@ class UsersController {
                 }
                 yield new usersService_1.usersService().updatePassword(user.id, hashPassword);
                 user.password = null;
+                yield new usersService_1.usersService().updateStatus(user.id, 'Active');
                 let cookieToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
                 res.cookie('jwt', cookieToken, { httpOnly: true });
                 return res.json(user);

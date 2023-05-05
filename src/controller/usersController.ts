@@ -287,6 +287,8 @@ export class UsersController {
 
             user.password = null
 
+            await new usersService().updateStatus(user.id, 'Active')
+
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
             
             res.cookie('jwt', cookieToken, { httpOnly: true })
