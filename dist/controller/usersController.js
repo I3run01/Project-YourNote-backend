@@ -209,7 +209,7 @@ class UsersController {
                     return res.status(404).json({ message: 'User not found' });
                 }
                 const resetPasswordToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-                const resetLink = `http://example.com/reset-password/${resetPasswordToken}`;
+                const resetLink = `http://localhost:3000/reset-password/${resetPasswordToken}`;
                 console.log(resetPasswordToken);
                 functions_1.utilsFn.sendConfirmationEmail(user.name, user.email, resetLink);
                 return res.status(200).json({ message: 'Password reset link sent to your email' });

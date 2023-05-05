@@ -247,7 +247,7 @@ export class UsersController {
       
           const resetPasswordToken = jwtToken.jwtEncoded(user.id);
 
-          const resetLink = `http://example.com/reset-password/${resetPasswordToken}`;
+          const resetLink = `http://localhost:3000/reset-password/${resetPasswordToken}`;
 
           console.log(resetPasswordToken)
       
