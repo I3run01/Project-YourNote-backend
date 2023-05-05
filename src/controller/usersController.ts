@@ -264,6 +264,8 @@ export class UsersController {
 
         const { password } = req.body;
         const { token } = req.params
+
+        if(!password || !token) return res.status(400).send({message: 'You forgot to send the password or the token or both'})
     
         try {
 
