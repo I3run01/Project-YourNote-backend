@@ -23,6 +23,8 @@ server.use(cookieParser())
 
 server.use(express.urlencoded({ extended: true}))
 
+server.use(express.static(__dirname + '/public'));
+
 server.use('/api/users', usersRouter)
 
 server.use((req: Request, res: Response) => {

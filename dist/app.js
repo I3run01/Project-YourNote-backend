@@ -20,6 +20,7 @@ server.use((0, cors_1.default)({
 server.use(body_parser_1.default.json());
 server.use((0, cookie_parser_1.default)());
 server.use(express_1.default.urlencoded({ extended: true }));
+server.use(express_1.default.static(__dirname + '/public'));
 server.use('/api/users', usersRouter_1.default);
 server.use((req, res) => {
     res.status(404);
