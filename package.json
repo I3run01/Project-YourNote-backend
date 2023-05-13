@@ -36,7 +36,9 @@
     "test": "set NODE_ENV=test& jest --runInBand",
     "build": "tsc",
     "test:e2e": "jest --config ./test/jest-e2e.json --forceExit",
-    "start:dev": "nodemon -e ts,json src/server.ts"
+    "start:dev": "nodemon -e ts,json src/server.ts",
+    "start": "node dist/server.js"
+    
   },
   "repository": {
     "type": "git",
