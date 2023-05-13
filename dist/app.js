@@ -8,6 +8,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const usersRouter_1 = __importDefault(require("./router/usersRouter"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const body_parser_1 = __importDefault(require("body-parser"));
 const mongoDB_1 = require("./database/mongoDB");
 dotenv_1.default.config();
 (0, mongoDB_1.mongoConnect)();
@@ -16,6 +17,7 @@ server.use((0, cors_1.default)({
     origin: 'http://localhost:3000',
     credentials: true
 }));
+server.use(body_parser_1.default.json());
 server.use((0, cookie_parser_1.default)());
 server.use(express_1.default.urlencoded({ extended: true }));
 server.use(express_1.default.static(__dirname + '/public'));
