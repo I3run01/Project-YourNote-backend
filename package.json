@@ -12,6 +12,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/node": "^18.16.0",
     "@types/nodemailer": "^6.4.7",
+    "@types/nodemon": "^1.19.2",
     "@types/supertest": "^2.0.12",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
@@ -25,6 +26,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.4",
     "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.22",
     "sequelize": "^6.31.0",
     "supertest": "^6.3.3",
     "typescript-compiler": "^1.4.1-2"
@@ -38,7 +40,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json --forceExit",
     "dev": "nodemon -e ts,json src/server.ts",
     "start": "node dist/server.js"
-    
   },
   "repository": {
     "type": "git",
