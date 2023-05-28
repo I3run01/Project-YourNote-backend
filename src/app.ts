@@ -29,7 +29,7 @@ server.use('/api/users', usersRouter)
 
 server.use((req: Request, res: Response) => {
     res.status(404)
-    res.json({ error: 'Endpoint not found'})
+    res.json({ message: 'Endpoint not found'})
 })
 
 export default server
