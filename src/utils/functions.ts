@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-export const requests = {
+export const apiRequest = {
     async googleLogin(token: string): Promise<any> {
         let googleUser = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`, {
             headers: {
@@ -17,7 +17,7 @@ export const requests = {
     },
 }
 
-export const utilsFn = {
+export const mailServices = {
     
     sendConfirmationEmail(email: string, link: string,  name?: string) {
         
