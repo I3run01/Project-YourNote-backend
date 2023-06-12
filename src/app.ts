@@ -18,18 +18,14 @@ server.use(cors({
 }))
 
 server.use(bodyParser.json())
-
 server.use(cookieParser())
-
 server.use(express.urlencoded({ extended: true}))
-
 server.use(express.static(__dirname + '/public'));
 
 server.use('/api/users', usersRouter)
 
 server.use((req: Request, res: Response) => {
-    res.status(404)
-    res.json({ message: 'Endpoint not found'})
+    res.status(404).json({ message: 'Endpoint not found'})
 })
 
 export default server

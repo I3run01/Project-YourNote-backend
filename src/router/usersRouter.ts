@@ -1,17 +1,17 @@
-import { Router } from "express";
-import { UsersController } from "../controller/usersController";
+import { Router } from 'express';
+import { UsersController } from '../controller/usersController';
 
-const router = Router()
+const router = Router();
+const usersController = new UsersController();
 
-router.get('/signout', new UsersController().signOut)
-router.get('/confirm-email/:token', new UsersController().emailConfirmation)
-router.get('', new UsersController().user)
-router.post('/signin', new UsersController().signIn)
-router.post('/signup', new UsersController().signUp)
-router.post('/google-signin', new UsersController().googleSignIn)
-router.post('/forgot-password', new UsersController().sendPasswordResetLink);
-router.post('/reset-password/:token', new UsersController().updatePasswordWithToken)
-router.delete('', new UsersController().deleteOne)
-router.delete('', new UsersController().deleteOne)
+router.get('/signout', usersController.signOut);
+router.get('/confirm-email/:token', usersController.emailConfirmation);
+router.get('/', usersController.user);
+router.post('/signin', usersController.signIn);
+router.post('/signup', usersController.signUp);
+router.post('/google-signin', usersController.googleSignIn);
+router.post('/forgot-password', usersController.sendPasswordResetLink);
+router.post('/reset-password/:token', usersController.updatePasswordWithToken);
+router.delete('/', usersController.deleteOne);
 
-export default router
+export default router;
