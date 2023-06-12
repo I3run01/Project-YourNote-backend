@@ -19,7 +19,7 @@ export const requests = {
 
 export const utilsFn = {
     
-    sendConfirmationEmail( name: string | null, email: string, link: string) {
+    sendConfirmationEmail(email: string, link: string,  name?: string) {
         
         const user = process.env.EMAIL_USER;
         const pass = process.env.EMAIL_PASS;

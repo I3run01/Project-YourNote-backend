@@ -1,5 +1,5 @@
 import usersModel from '../Model/usersModel'
-import CreateUserDto from '../dto/userDTO'
+import CreateUserDto from '../dto/usersDTO'
 
 export class usersService {
     async create  (createUserDto: CreateUserDto) {

@@ -3,7 +3,6 @@ import { UsersController } from "../controller/usersController";
 
 const router = Router()
 
-router.get('/ping', new UsersController().ping)
 router.get('/signout', new UsersController().signOut)
 router.get('/confirm-email/:token', new UsersController().emailConfirmation)
 router.get('', new UsersController().user)

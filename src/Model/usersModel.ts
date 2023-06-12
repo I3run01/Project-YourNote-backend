@@ -1,39 +1,43 @@
-import { Schema,Model, model, connection } from "mongoose";
+import { Document, Schema, Model, model } from "mongoose";
 
-type UsersType = {
-    name: string | null
-    email: string
-    password: string | null
-    avatarImage: string | null
-    status: 'Pending' | 'Active' 
+interface IUser {
+    name?: string;
+    email: string;
+    password?: string;
+    avatarImage?: string;
+    status: 'Pending' | 'Active';
 }
 
-const schema = new Schema<UsersType>({
+// 2. Define the corresponding schema for the user collection.
+const UserSchema: Schema = new Schema({
     name: {
-        type: String || null,
+        type: String,
         required: false
     },
     email: {
-        type: String || null,
-        required: true
+        type: String,
+        required: true,
+        unique: true
     },
     password: {
         type: String,
         required: true
     },
     avatarImage: {
-        type: String || null,
+        type: String,
         required: false
     },
     status: {
         type: String,
-        required: true,
-        enum: ['Pending', 'Active'], 
+        enum: ['Pending', 'Active'],
         default: 'Pending'
-    },
-})
+    }
+});
 
-const modelName: string = 'users'
-const usersModel = connection && connection.models[modelName] ? (connection.models[modelName] as Model<UsersType>) : model<UsersType>(modelName, schema)
 
-export default usersModel
+interface UserDocument extends IUser, Document {}
+
+
+const UserModel: Model<UserDocument> = model<UserDocument>("User", UserSchema);
+
+export default UserModel;

@@ -1,16 +1,12 @@
 import { Request, Response, response } from 'express';
 import bcrypt from 'bcryptjs'
 import { usersService } from '../services/usersService';
-import CreateUserDto from '../dto/userDTO'
+import CreateUserDto from '../dto/usersDTO'
 import { jwtToken } from '../auth/jwtToken'
 import { utilsFn } from '../utils/functions'
 import { requests } from '../utils/functions'
 
 export class UsersController {
-
-    ping(req: Request, res: Response) {
-        res.json({ pong: true })
-    }
 
     async signUp(req: Request, res: Response) {
         const { email, password } = req.body;
@@ -27,9 +23,9 @@ export class UsersController {
 
             const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
 
-            console.log(confirmationCode)
+            
              
-            utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink)
+            utilsFn.sendConfirmationEmail(user.email, emailConfirmationLink, user?.name)
 
             return res.status(401).json({
                 message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
@@ -55,7 +51,7 @@ export class UsersController {
 
             const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
              
-            utilsFn.sendConfirmationEmail(UserDto.name, UserDto.email, emailConfirmationLink)
+            utilsFn.sendConfirmationEmail(UserDto.email, emailConfirmationLink, UserDto?.name as string)
 
             return res.json(newUser);
 
@@ -88,7 +84,7 @@ export class UsersController {
 
                 const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
                  
-                utilsFn.sendConfirmationEmail(user.name, user.email, emailConfirmationLink)
+                utilsFn.sendConfirmationEmail(user.email, emailConfirmationLink, user.name)
 
                 return res.status(401).send({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
@@ -99,7 +95,7 @@ export class UsersController {
             
             res.cookie('jwt', token, { httpOnly: true })
 
-            user.password = null
+            user.password = ''
 
             return res.json(user)
         } catch (error) {
@@ -131,7 +127,7 @@ export class UsersController {
 
                 const confirmationCode:string = jwtToken.jwtEncoded(user.id)
                  
-                utilsFn.sendConfirmationEmail(user.name, user.email, confirmationCode)
+                utilsFn.sendConfirmationEmail(user.email, confirmationCode, user.name)
                 
                 return res.status(401).json({
                       message: "Pending Account. Please Verify Your Email!. We sent a new link to your email",
@@ -220,8 +216,7 @@ export class UsersController {
     
             let userToken: string = jwtToken.jwtEncoded(user.id)
     
-            user.password = null
-    
+            user.password = ''
             res.cookie('jwt', userToken, { httpOnly: true })
             
             return res.json(user)
@@ -251,7 +246,7 @@ export class UsersController {
 
           console.log(resetPasswordToken)
       
-          utilsFn.sendConfirmationEmail(user.name, user.email, resetLink)
+          utilsFn.sendConfirmationEmail(user.email, resetLink, user.name)
 
           return res.status(200).json({ message: 'Password reset link sent to your email' });
         } catch (error) {
@@ -285,7 +280,7 @@ export class UsersController {
         
             await new usersService().updatePassword(user.id, hashPassword)
 
-            user.password = null
+            user.password = ''
 
             await new usersService().updateStatus(user.id, 'Active')
 
