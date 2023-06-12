@@ -35,8 +35,7 @@ const UserSchema: Schema = new Schema({
 });
 
 
-interface UserDocument extends IUser, Document {}
-
+export interface UserDocument extends IUser, Document {}
 
 const UserModel: Model<UserDocument> = model<UserDocument>("User", UserSchema);
 

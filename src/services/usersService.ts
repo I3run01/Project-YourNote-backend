@@ -1,28 +1,37 @@
-import usersModel from '../Model/usersModel'
+import UsersModel from '../models/usersModel'
+import { UserDocument } from '../models/usersModel';
 import CreateUserDto from '../dto/usersDTO'
 
 export class usersService {
-    async create  (createUserDto: CreateUserDto) {
-        return usersModel.create(createUserDto);
+    create  (createUserDto: CreateUserDto): Promise<UserDocument> {
+        return UsersModel.create(createUserDto);
     }
     
-    async findbyId  (id: string) {
-        return await usersModel.findById(id)
+    findbyId  (id: string): Promise<UserDocument | null> {
+        return UsersModel.findById(id)
     }
     
-    async findByEmail (email: string) {
-        return await usersModel.findOne({email})
+    findByEmail (email: string): Promise<UserDocument | null> {
+        return UsersModel.findOne({email})
     }
 
-    async deleteUser  (id: string) {
-        return await usersModel.deleteOne({_id: id}) 
+    deleteUser  (id: string): Promise<{ ok?: number; n?: number } & { deletedCount?: number }> {
+        return UsersModel.deleteOne({_id: id}) 
     }
 
-    async updateStatus(id: string, status: 'Active' | 'Pending') {
-        return await usersModel.updateOne({_id: id}, {status})
+    async updateStatus(id: string, status: 'Active' | 'Pending'): Promise<UserDocument> {
+        const user = await UsersModel.findByIdAndUpdate(id, { status }, { new: true });
+        if (!user) {
+            throw new Error(`User with id ${id} not found`);
+        }
+        return user;
     }
 
-    async updatePassword(id: string, password: string) {
-        return await usersModel.updateOne({_id: id}, {password})
+    async updatePassword(id: string, password: string): Promise<UserDocument> {
+        const user = await UsersModel.findByIdAndUpdate(id, { password }, { new: true });
+        if (!user) {
+            throw new Error(`User with id ${id} not found`);
+        }
+        return user;
     }
 }
