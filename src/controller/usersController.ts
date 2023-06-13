@@ -8,6 +8,7 @@ import { apiRequest } from '../utils/functions'
 
 export class UsersController {
     private userService: usersService
+    
     constructor() {
         this.userService = new usersService()
     }
@@ -20,7 +21,7 @@ export class UsersController {
                 message: 'invalide credentials'
             });
 
-            let user = await this.userService.findByEmail(email);
+            let user = await new usersService().findByEmail(email);
 
             if (user?.status !== "Active" && user) {
 
@@ -50,7 +51,7 @@ export class UsersController {
             };
 
             
-            let newUser = await this.userService.create(UserDto);
+            let newUser = await new usersService().create(UserDto);
 
             const confirmationCode:string = jwtToken.jwtEncoded(newUser.id)
 
@@ -70,7 +71,7 @@ export class UsersController {
         try {
             const { email, password } = req.body;
 
-            const user = await this.userService.findByEmail(email)
+            const user = await new usersService().findByEmail(email)
         
             if (!user || !user?.password === null) return res.status(400).json({
                 message: 'no user found',
@@ -119,7 +120,7 @@ export class UsersController {
                 message: 'Unauthorized request',
             });
 
-            let user = await this.userService.findbyId(data.id)
+            let user = await new usersService().findbyId(data.id)
 
             if (!user) {
                 return res.status(400).json({
@@ -157,13 +158,13 @@ export class UsersController {
                 message: 'invalid token',
             });
             
-            let user = await this.userService.findbyId(data.id)    
+            let user = await new usersService().findbyId(data.id)    
 
             if (!user) return res.status(400).json({
                 message: 'no user found',
             });
 
-            await this.userService.updateStatus(user.id, 'Active')
+            await new usersService().updateStatus(user.id, 'Active')
 
             let userToken: string = jwtToken.jwtEncoded(user.id)
 
@@ -196,7 +197,7 @@ export class UsersController {
             
             const data = JSON.parse(jwtToken.jwtDecoded(token))
 
-            return res.json(await this.userService.deleteUser(data.id))
+            return res.json(await new usersService().deleteUser(data.id))
         } catch (error) {
             return res.status(500).json(error)
         }
@@ -211,10 +212,10 @@ export class UsersController {
 
             let googleUser = JSON.parse(await apiRequest.googleLogin(googleToken))
  
-            let user = await this.userService.findByEmail(googleUser.email)
+            let user = await new usersService().findByEmail(googleUser.email)
 
             if (!user) {
-                user = await this.userService.create({
+                user = await new usersService().create({
                     name: googleUser.name,
                     email: googleUser.email,
                     password: await bcrypt.hash(String(Math.random()), 10),
@@ -242,7 +243,7 @@ export class UsersController {
                 message: 'no email received'
             })
   
-            const user = await this.userService.findByEmail(email);
+            const user = await new usersService().findByEmail(email);
 
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
@@ -275,17 +276,17 @@ export class UsersController {
                 message: 'Unauthorized request',
             });
 
-            let user = await this.userService.findbyId(data.id)
+            let user = await new usersService().findbyId(data.id)
 
             if (!user) {
                 return res.status(400).json({ message: 'no user found' });
             }
         
-            await this.userService.updatePassword(user.id, hashPassword)
+            await new usersService().updatePassword(user.id, hashPassword)
 
             user.password = ''
 
-            await this.userService.updateStatus(user.id, 'Active')
+            await new usersService().updateStatus(user.id, 'Active')
 
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
             
