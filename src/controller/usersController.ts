@@ -7,11 +7,6 @@ import { mailServices } from '../utils/functions'
 import { apiRequest } from '../utils/functions'
 
 export class UsersController {
-    private userService: usersService
-    
-    constructor() {
-        this.userService = new usersService()
-    }
 
     async signUp(req: Request, res: Response) {
         try {
