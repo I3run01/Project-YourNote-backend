@@ -13,7 +13,7 @@ mongoConnect()
 const server = express()
 
 server.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://yournote.cloud'],
     credentials: true
 }))
 
