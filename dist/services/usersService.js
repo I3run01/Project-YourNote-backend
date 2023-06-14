@@ -4,25 +4,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersService = void 0;
-const usersModel_1 = __importDefault(require("../Model/usersModel"));
+const usersModel_1 = __importDefault(require("../models/usersModel"));
 class usersService {
-    async create(createUserDto) {
+    create(createUserDto) {
         return usersModel_1.default.create(createUserDto);
     }
-    async findbyId(id) {
-        return await usersModel_1.default.findById(id);
+    findbyId(id) {
+        return usersModel_1.default.findById(id);
     }
-    async findByEmail(email) {
-        return await usersModel_1.default.findOne({ email });
+    findByEmail(email) {
+        return usersModel_1.default.findOne({ email });
     }
-    async deleteUser(id) {
-        return await usersModel_1.default.deleteOne({ _id: id });
+    deleteUser(id) {
+        return usersModel_1.default.deleteOne({ _id: id });
     }
     async updateStatus(id, status) {
-        return await usersModel_1.default.updateOne({ _id: id }, { status });
+        const user = await usersModel_1.default.findByIdAndUpdate(id, { status }, { new: true });
+        if (!user) {
+            throw new Error(`User with id ${id} not found`);
+        }
+        return user;
     }
     async updatePassword(id, password) {
-        return await usersModel_1.default.updateOne({ _id: id }, { password });
+        const user = await usersModel_1.default.findByIdAndUpdate(id, { password }, { new: true });
+        if (!user) {
+            throw new Error(`User with id ${id} not found`);
+        }
+        return user;
     }
 }
 exports.usersService = usersService;

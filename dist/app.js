@@ -14,7 +14,7 @@ dotenv_1.default.config();
 (0, mongoDB_1.mongoConnect)();
 const server = (0, express_1.default)();
 server.use((0, cors_1.default)({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://yournote.cloud'],
     credentials: true
 }));
 server.use(body_parser_1.default.json());
@@ -23,7 +23,6 @@ server.use(express_1.default.urlencoded({ extended: true }));
 server.use(express_1.default.static(__dirname + '/public'));
 server.use('/api/users', usersRouter_1.default);
 server.use((req, res) => {
-    res.status(404);
-    res.json({ error: 'Endpoint not found' });
+    res.status(404).json({ message: 'Endpoint not found' });
 });
 exports.default = server;

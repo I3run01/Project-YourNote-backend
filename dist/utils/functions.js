@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.utilsFn = exports.requests = void 0;
+exports.mailServices = exports.apiRequest = void 0;
 const axios_1 = __importDefault(require("axios"));
 const nodemailer_1 = require("nodemailer");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-exports.requests = {
+exports.apiRequest = {
     async googleLogin(token) {
         let googleUser = await axios_1.default.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`, {
             headers: {
@@ -19,8 +19,8 @@ exports.requests = {
         return JSON.stringify(googleUser.data);
     },
 };
-exports.utilsFn = {
-    sendConfirmationEmail(name, email, link) {
+exports.mailServices = {
+    sendConfirmationEmail(email, link, name) {
         const user = process.env.EMAIL_USER;
         const pass = process.env.EMAIL_PASS;
         const transport = (0, nodemailer_1.createTransport)({
