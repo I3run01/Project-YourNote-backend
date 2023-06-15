@@ -165,6 +165,9 @@ class UsersController {
                     avatarImage: googleUser.picture,
                 });
             }
+            if (user.status != 'Active') {
+                await new usersService_1.usersService().updateStatus(user.id, 'Active');
+            }
             let userToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
             user.password = '';
             res.cookie('jwt', userToken, { sameSite: 'none', secure: true });

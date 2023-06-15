@@ -217,7 +217,11 @@ export class UsersController {
                     avatarImage:googleUser.picture,
                 });
             }
-    
+
+            if(user.status != 'Active') {
+                await new usersService().updateStatus(user.id, 'Active')
+            }
+
             let userToken: string = jwtToken.jwtEncoded(user.id)
     
             user.password = ''
