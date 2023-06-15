@@ -94,11 +94,9 @@ export class UsersController {
             
             let token: string = jwtToken.jwtEncoded(user.id)
             
-<<<<<<< HEAD
+
             res.cookie('jwt', token, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-=======
-            res.cookie('jwt', token, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
->>>>>>> parent of d04dc31 (cookie options)
+
 
             user.password = ''
 
@@ -167,12 +165,8 @@ export class UsersController {
 
             let userToken: string = jwtToken.jwtEncoded(user.id)
 
-<<<<<<< HEAD
             res.cookie('jwt', userToken, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-=======
-            res.cookie('jwt', userToken, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
->>>>>>> parent of d04dc31 (cookie options)
-    
+
             return res.json(user)
         } catch (error) {
             return res.status(500).json(error)
@@ -233,12 +227,9 @@ export class UsersController {
             let userToken: string = jwtToken.jwtEncoded(user.id)
     
             user.password = ''
-<<<<<<< HEAD
+
             res.cookie('jwt', userToken, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-=======
-            res.cookie('jwt', userToken, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
->>>>>>> parent of d04dc31 (cookie options)
-            
+
             return res.json(user)
         } catch (error) {
             return res.status(500).json(error)
@@ -300,13 +291,9 @@ export class UsersController {
             await new usersService().updateStatus(user.id, 'Active')
 
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
-            
-<<<<<<< HEAD
+
             res.cookie('jwt', cookieToken, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-=======
-            res.cookie('jwt', cookieToken, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
->>>>>>> parent of d04dc31 (cookie options)
-        
+
             return res.json(user);
 
         } catch (error) {
