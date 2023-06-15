@@ -5,8 +5,6 @@ import CreateUserDto from '../dto/usersDTO'
 import { jwtToken } from '../auth/jwtToken'
 import { mailServices } from '../utils/functions'
 import { apiRequest } from '../utils/functions'
-import { cookieOptions } from '../auth/cookieOptions'
-
 export class UsersController {
 
     async signUp(req: Request, res: Response) {
@@ -95,7 +93,7 @@ export class UsersController {
             
             let token: string = jwtToken.jwtEncoded(user.id)
             
-            res.cookie('jwt', token, cookieOptions)
+            res.cookie('jwt', token, { sameSite: 'none', secure: true })
 
             user.password = ''
 
@@ -164,7 +162,7 @@ export class UsersController {
 
             let userToken: string = jwtToken.jwtEncoded(user.id)
 
-            res.cookie('jwt', userToken, cookieOptions)
+            res.cookie('jwt', userToken, { sameSite: 'none', secure: true })
     
             return res.json(user)
         } catch (error) {
@@ -226,7 +224,7 @@ export class UsersController {
             let userToken: string = jwtToken.jwtEncoded(user.id)
     
             user.password = ''
-            res.cookie('jwt', userToken, cookieOptions)
+            res.cookie('jwt', userToken, { sameSite: 'none', secure: true })
             
             return res.json(user)
         } catch (error) {
@@ -290,7 +288,7 @@ export class UsersController {
 
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
             
-            res.cookie('jwt', cookieToken, cookieOptions)
+            res.cookie('jwt', cookieToken, { sameSite: 'none', secure: true })
         
             return res.json(user);
 
