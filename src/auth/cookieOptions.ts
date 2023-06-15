@@ -1,5 +1,5 @@
 export let cookieOptions: { 
-    domain: 'www.yournote.cloud', 
+    domain: 'https://yournote.cloud', 
     sameSite: 'strict', 
     secure: true,
     httpOnly: true
