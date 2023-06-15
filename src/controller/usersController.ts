@@ -94,7 +94,7 @@ export class UsersController {
             
             let token: string = jwtToken.jwtEncoded(user.id)
             
-            res.cookie('jwt', token, {domain: 'yournote.cloud',  sameSite: 'none' as any, secure: true, httpOnly: true})
+            res.cookie('jwt', token, { sameSite: 'none', secure: true })
 
             user.password = ''
 
@@ -163,7 +163,7 @@ export class UsersController {
 
             let userToken: string = jwtToken.jwtEncoded(user.id)
 
-            res.cookie('jwt', userToken, {domain: 'yournote.cloud',  sameSite: 'none' as any, secure: true, httpOnly: true})
+            res.cookie('jwt', userToken, { sameSite: 'none', secure: true })
     
             return res.json(user)
         } catch (error) {
@@ -217,11 +217,15 @@ export class UsersController {
                     avatarImage:googleUser.picture,
                 });
             }
-    
+
+            if(user.status != 'Active') {
+                await new usersService().updateStatus(user.id, 'Active')
+            }
+
             let userToken: string = jwtToken.jwtEncoded(user.id)
     
             user.password = ''
-            res.cookie('jwt', userToken, {domain: 'yournote.cloud',  sameSite: 'none' as any, secure: true, httpOnly: true})
+            res.cookie('jwt', userToken, { sameSite: 'none', secure: true })
             
             return res.json(user)
         } catch (error) {
@@ -285,7 +289,7 @@ export class UsersController {
 
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
             
-            res.cookie('jwt', cookieToken, {domain: 'yournote.cloud',  sameSite: 'none' as any, secure: true, httpOnly: true})
+            res.cookie('jwt', cookieToken, { sameSite: 'none', secure: true })
         
             return res.json(user);
 
