@@ -14,7 +14,7 @@ dotenv_1.default.config();
 (0, mongoDB_1.mongoConnect)();
 const server = (0, express_1.default)();
 server.use((0, cors_1.default)({
-    origin: ['http://localhost:3000', 'https://yournote.cloud'],
+    origin: ['https://yournote.cloud'],
     credentials: true
 }));
 server.use(body_parser_1.default.json());
