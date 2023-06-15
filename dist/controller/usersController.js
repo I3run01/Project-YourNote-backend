@@ -20,7 +20,7 @@ class UsersController {
             let user = await new usersService_1.usersService().findByEmail(email);
             if (user?.status !== "Active" && user) {
                 const confirmationCode = jwtToken_1.jwtToken.jwtEncoded(user.id);
-                const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
+                const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`;
                 functions_1.mailServices.sendConfirmationEmail(user.email, emailConfirmationLink, user?.name);
                 return res.status(401).json({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
@@ -38,7 +38,7 @@ class UsersController {
             };
             let newUser = await new usersService_1.usersService().create(UserDto);
             const confirmationCode = jwtToken_1.jwtToken.jwtEncoded(newUser.id);
-            const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
+            const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`;
             functions_1.mailServices.sendConfirmationEmail(UserDto.email, emailConfirmationLink, UserDto?.name);
             return res.json(newUser);
         }
@@ -61,14 +61,14 @@ class UsersController {
             if (user.status !== "Active") {
                 const confirmationCode = jwtToken_1.jwtToken.jwtEncoded(user.id);
                 console.log(confirmationCode);
-                const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`;
+                const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`;
                 functions_1.mailServices.sendConfirmationEmail(user.email, emailConfirmationLink, user.name);
                 return res.status(401).send({
                     message: "Pending Account. Please Verify Your Email!, a new link was sent in your email",
                 });
             }
             let token = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', token, { httpOnly: true });
+            res.cookie('jwt', token, { domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true });
             user.password = '';
             return res.json(user);
         }
@@ -120,7 +120,7 @@ class UsersController {
                 });
             await new usersService_1.usersService().updateStatus(user.id, 'Active');
             let userToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', userToken, { httpOnly: true });
+            res.cookie('jwt', userToken, { domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true });
             return res.json(user);
         }
         catch (error) {
@@ -167,7 +167,7 @@ class UsersController {
             }
             let userToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
             user.password = '';
-            res.cookie('jwt', userToken, { httpOnly: true });
+            res.cookie('jwt', userToken, { domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true });
             return res.json(user);
         }
         catch (error) {
@@ -186,7 +186,7 @@ class UsersController {
                 return res.status(404).json({ message: 'User not found' });
             }
             const resetPasswordToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            const resetLink = `http://localhost:3000/reset-password/${resetPasswordToken}`;
+            const resetLink = `https://yournote.cloud/reset-password/${resetPasswordToken}`;
             functions_1.mailServices.sendConfirmationEmail(user.email, resetLink, user.name);
             return res.status(200).json({ message: 'Password reset link sent to your email' });
         }
@@ -215,7 +215,7 @@ class UsersController {
             user.password = '';
             await new usersService_1.usersService().updateStatus(user.id, 'Active');
             let cookieToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', cookieToken, { httpOnly: true });
+            res.cookie('jwt', cookieToken, { domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true });
             return res.json(user);
         }
         catch (error) {
