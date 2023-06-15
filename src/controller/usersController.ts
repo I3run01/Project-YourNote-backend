@@ -22,7 +22,7 @@ export class UsersController {
 
                 const confirmationCode:string = jwtToken.jwtEncoded(user.id)
 
-                const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
+                const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
 
                 
                 
@@ -50,7 +50,7 @@ export class UsersController {
 
             const confirmationCode:string = jwtToken.jwtEncoded(newUser.id)
 
-            const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
+            const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
                 
             mailServices.sendConfirmationEmail(UserDto.email, emailConfirmationLink, UserDto?.name as string)
 
@@ -83,7 +83,7 @@ export class UsersController {
 
                 console.log(confirmationCode)
 
-                const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
+                const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
                  
                 mailServices.sendConfirmationEmail(user.email, emailConfirmationLink, user.name)
 
@@ -250,7 +250,7 @@ export class UsersController {
       
             const resetPasswordToken = jwtToken.jwtEncoded(user.id);
 
-            const resetLink = `http://localhost:3000/reset-password/${resetPasswordToken}`;
+            const resetLink = `https://yournote.cloud/reset-password/${resetPasswordToken}`;
         
             mailServices.sendConfirmationEmail(user.email, resetLink, user.name)
 
