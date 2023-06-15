@@ -9,6 +9,7 @@ const usersService_1 = require("../services/usersService");
 const jwtToken_1 = require("../auth/jwtToken");
 const functions_1 = require("../utils/functions");
 const functions_2 = require("../utils/functions");
+const cookieOptions_1 = require("../auth/cookieOptions");
 class UsersController {
     async signUp(req, res) {
         try {
@@ -68,7 +69,7 @@ class UsersController {
                 });
             }
             let token = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', token, { domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true });
+            res.cookie('jwt', token, cookieOptions_1.cookieOptions);
             user.password = '';
             return res.json(user);
         }
@@ -120,7 +121,7 @@ class UsersController {
                 });
             await new usersService_1.usersService().updateStatus(user.id, 'Active');
             let userToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', userToken, { domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true });
+            res.cookie('jwt', userToken, cookieOptions_1.cookieOptions);
             return res.json(user);
         }
         catch (error) {
@@ -170,7 +171,7 @@ class UsersController {
             }
             let userToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
             user.password = '';
-            res.cookie('jwt', userToken, { domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true });
+            res.cookie('jwt', userToken, cookieOptions_1.cookieOptions);
             return res.json(user);
         }
         catch (error) {
@@ -218,7 +219,7 @@ class UsersController {
             user.password = '';
             await new usersService_1.usersService().updateStatus(user.id, 'Active');
             let cookieToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', cookieToken, { domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true });
+            res.cookie('jwt', cookieToken, cookieOptions_1.cookieOptions);
             return res.json(user);
         }
         catch (error) {
