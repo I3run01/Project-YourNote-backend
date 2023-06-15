@@ -6,4 +6,4 @@ let cookieOptions = {
 }
 
 export default cookieOptions
-//{domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true}
+//{domain: '.yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true}
