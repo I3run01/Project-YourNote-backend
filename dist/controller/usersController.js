@@ -68,7 +68,7 @@ class UsersController {
                 });
             }
             let token = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', token, { httpOnly: true });
+            res.cookie('jwt', token, { sameSite: 'none', secure: true });
             user.password = '';
             return res.json(user);
         }
@@ -120,7 +120,7 @@ class UsersController {
                 });
             await new usersService_1.usersService().updateStatus(user.id, 'Active');
             let userToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', userToken, { httpOnly: true });
+            res.cookie('jwt', userToken, { sameSite: 'none', secure: true });
             return res.json(user);
         }
         catch (error) {
@@ -167,7 +167,7 @@ class UsersController {
             }
             let userToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
             user.password = '';
-            res.cookie('jwt', userToken, { httpOnly: true });
+            res.cookie('jwt', userToken, { sameSite: 'none', secure: true });
             return res.json(user);
         }
         catch (error) {
@@ -215,7 +215,7 @@ class UsersController {
             user.password = '';
             await new usersService_1.usersService().updateStatus(user.id, 'Active');
             let cookieToken = jwtToken_1.jwtToken.jwtEncoded(user.id);
-            res.cookie('jwt', cookieToken, { httpOnly: true });
+            res.cookie('jwt', cookieToken, { sameSite: 'none', secure: true });
             return res.json(user);
         }
         catch (error) {
