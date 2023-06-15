@@ -5,14 +5,7 @@ import CreateUserDto from '../dto/usersDTO'
 import { jwtToken } from '../auth/jwtToken'
 import { mailServices } from '../utils/functions'
 import { apiRequest } from '../utils/functions'
-//import { cookieOptions } from '../auth/cookieOptions'
-
-let cookieOptions = { 
-    domain: 'yournote.cloud', 
-    sameSite: 'none' as any, 
-    secure: true,
-    httpOnly: true
-}
+import { cookieOptions } from '../auth/cookieOptions'
 
 export class UsersController {
 
