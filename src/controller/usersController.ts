@@ -23,9 +23,7 @@ export class UsersController {
                 const confirmationCode:string = jwtToken.jwtEncoded(user.id)
 
                 const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
-
-                
-                
+   
                 mailServices.sendConfirmationEmail(user.email, emailConfirmationLink, user?.name)
 
                 return res.status(401).json({
@@ -44,8 +42,7 @@ export class UsersController {
                 password: await bcrypt.hash(password, 10),
                 avatarImage: null,
             };
-
-            
+   
             let newUser = await new usersService().create(UserDto);
 
             const confirmationCode:string = jwtToken.jwtEncoded(newUser.id)
@@ -71,8 +68,7 @@ export class UsersController {
             if (!user || !user?.password === null) return res.status(400).json({
                 message: 'no user found',
             });
-
-            
+    
             if (! await bcrypt.compare(password, user.password as string)) return res.status(401).json({
                 message: 'invalid credentials',
             });
@@ -93,10 +89,8 @@ export class UsersController {
             }
             
             let token: string = jwtToken.jwtEncoded(user.id)
-            
 
             res.cookie('jwt', token, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-
 
             user.password = ''
 
@@ -135,7 +129,6 @@ export class UsersController {
                       message: "Pending Account. Please Verify Your Email!. We sent a new link to your email",
                 });
             }
-            
 
             return res.json(user)
         } catch {
