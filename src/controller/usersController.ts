@@ -95,7 +95,7 @@ export class UsersController {
             
             let token: string = jwtToken.jwtEncoded(user.id)
             
-            res.cookie('jwt', token, {domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
+            res.cookie('jwt', token, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
 
             user.password = ''
 
@@ -164,7 +164,7 @@ export class UsersController {
 
             let userToken: string = jwtToken.jwtEncoded(user.id)
 
-            res.cookie('jwt', userToken, {domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
+            res.cookie('jwt', userToken, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
     
             return res.json(user)
         } catch (error) {
@@ -226,7 +226,7 @@ export class UsersController {
             let userToken: string = jwtToken.jwtEncoded(user.id)
     
             user.password = ''
-            res.cookie('jwt', userToken, {domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
+            res.cookie('jwt', userToken, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
             
             return res.json(user)
         } catch (error) {
@@ -290,7 +290,7 @@ export class UsersController {
 
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
             
-            res.cookie('jwt', cookieToken, {domain: 'yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
+            res.cookie('jwt', cookieToken, {domain: 'yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true})
         
             return res.json(user);
 
