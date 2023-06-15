@@ -1,9 +1,9 @@
-let cookieOptions = { 
-    domain: 'yournote.cloud' as string, 
-    sameSite: 'none' as any, 
-    secure: true as boolean,
-    httpOnly: true as boolean,
+
+export let cookieOptions: { 
+    domain: 'https://yournote.cloud', 
+    sameSite: 'strict', 
+    secure: true,
+    httpOnly: true
 }
 
-export default cookieOptions
 //{domain: '.yournote.cloud', sameSite: 'strict', secure: true, httpOnly: true}
