@@ -22,8 +22,10 @@ export class UsersController {
 
                 const confirmationCode:string = jwtToken.jwtEncoded(user.id)
 
-                const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
-   
+                const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
+
+                
+                
                 mailServices.sendConfirmationEmail(user.email, emailConfirmationLink, user?.name)
 
                 return res.status(401).json({
@@ -42,12 +44,13 @@ export class UsersController {
                 password: await bcrypt.hash(password, 10),
                 avatarImage: null,
             };
-   
+
+            
             let newUser = await new usersService().create(UserDto);
 
             const confirmationCode:string = jwtToken.jwtEncoded(newUser.id)
 
-            const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
+            const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
                 
             mailServices.sendConfirmationEmail(UserDto.email, emailConfirmationLink, UserDto?.name as string)
 
@@ -68,7 +71,8 @@ export class UsersController {
             if (!user || !user?.password === null) return res.status(400).json({
                 message: 'no user found',
             });
-    
+
+            
             if (! await bcrypt.compare(password, user.password as string)) return res.status(401).json({
                 message: 'invalid credentials',
             });
@@ -79,7 +83,7 @@ export class UsersController {
 
                 console.log(confirmationCode)
 
-                const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
+                const emailConfirmationLink = `http://localhost:3000/emailConfirmation/${confirmationCode}`
                  
                 mailServices.sendConfirmationEmail(user.email, emailConfirmationLink, user.name)
 
@@ -89,8 +93,8 @@ export class UsersController {
             }
             
             let token: string = jwtToken.jwtEncoded(user.id)
-
-            res.cookie('jwt', token, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
+            
+            res.cookie('jwt', token, { httpOnly: true })
 
             user.password = ''
 
@@ -129,6 +133,7 @@ export class UsersController {
                       message: "Pending Account. Please Verify Your Email!. We sent a new link to your email",
                 });
             }
+            
 
             return res.json(user)
         } catch {
@@ -158,8 +163,8 @@ export class UsersController {
 
             let userToken: string = jwtToken.jwtEncoded(user.id)
 
-            res.cookie('jwt', userToken, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-
+            res.cookie('jwt', userToken, { httpOnly: true })
+    
             return res.json(user)
         } catch (error) {
             return res.status(500).json(error)
@@ -212,17 +217,12 @@ export class UsersController {
                     avatarImage:googleUser.picture,
                 });
             }
-
-            if(user.status != 'Active') {
-                await new usersService().updateStatus(user.id, 'Active')
-            }
-
+    
             let userToken: string = jwtToken.jwtEncoded(user.id)
     
             user.password = ''
-
-            res.cookie('jwt', userToken, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-
+            res.cookie('jwt', userToken, { httpOnly: true })
+            
             return res.json(user)
         } catch (error) {
             return res.status(500).json(error)
@@ -246,7 +246,7 @@ export class UsersController {
       
             const resetPasswordToken = jwtToken.jwtEncoded(user.id);
 
-            const resetLink = `https://yournote.cloud/reset-password/${resetPasswordToken}`;
+            const resetLink = `http://localhost:3000/reset-password/${resetPasswordToken}`;
         
             mailServices.sendConfirmationEmail(user.email, resetLink, user.name)
 
@@ -284,9 +284,9 @@ export class UsersController {
             await new usersService().updateStatus(user.id, 'Active')
 
             let cookieToken: string = jwtToken.jwtEncoded(user.id)
-
-            res.cookie('jwt', cookieToken, {domain: '.yournote.cloud', sameSite: 'none', secure: true, httpOnly: true})
-
+            
+            res.cookie('jwt', cookieToken, { httpOnly: true })
+        
             return res.json(user);
 
         } catch (error) {
