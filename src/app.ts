@@ -2,6 +2,7 @@ import express, {Request, Response} from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import usersRouter from './router/usersRouter'
+import filesRouter from './router/filesRouter'
 import cookieParser from "cookie-parser";
 import bodyParser from 'body-parser';
 import { mongoConnect } from './database/mongoDB'
@@ -23,6 +24,7 @@ server.use(express.urlencoded({ extended: true}))
 server.use(express.static(__dirname + '/public'));
 
 server.use('/api/users', usersRouter)
+server.use('/api/files', filesRouter)
 
 server.use((req: Request, res: Response) => {
     res.status(404).json({ message: 'Endpoint not found'})
