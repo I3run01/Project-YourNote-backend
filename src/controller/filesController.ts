@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { jwtToken } from '../auth/jwtToken';
-import { FilesService } from '../services/filesService'; // ensure the correct path to your service file
+import { FilesService } from '../services/filesService';
 
 export class FilesController {
 
