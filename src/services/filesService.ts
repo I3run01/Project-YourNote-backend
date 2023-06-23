@@ -56,5 +56,14 @@ export class FilesService {
             throw err;
         }
     }
+
+    async changeFileContent(fileID: string, newContent: string): Promise<FilesDocument | null> {
+        try {
+            const file = await this.model.findByIdAndUpdate(fileID, { content: newContent }, { new: true });
+            return file;
+        } catch (err) {
+            throw err;
+        }
+    }
     
 }

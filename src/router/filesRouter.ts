@@ -9,6 +9,6 @@ router.get('/:fileID', filesController.getFile);
 router.post('/', filesController.createFile);
 router.delete('/:fileID', filesController.deleteFile)
 router.put('/:fileID/title', filesController.updateFileTitle);
-
+router.put('/:fileID/content', filesController.updateFileContent);
 
 export default router;
