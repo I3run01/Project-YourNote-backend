@@ -35,7 +35,6 @@ export class FilesService {
         }
     }
     
-    
     async createNewFile(userId: string): Promise<FilesDocument> {
         try {
             const newFile = this.model.create({
@@ -48,4 +47,14 @@ export class FilesService {
             throw err;
         }
     }
+
+    async changeFileTitle(fileID: string, newTitle: string): Promise<FilesDocument | null> {
+        try {
+            const file = await this.model.findByIdAndUpdate(fileID, { title: newTitle }, { new: true });
+            return file;
+        } catch (err) {
+            throw err;
+        }
+    }
+    
 }

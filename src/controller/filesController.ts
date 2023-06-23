@@ -4,6 +4,32 @@ import { FilesService } from '../services/filesService'; // ensure the correct p
 
 export class FilesController {
 
+    /*
+    private filesService: FilesService;
+
+    constructor() {
+        this.filesService = new FilesService()
+    }
+    */
+    async createFile(req: Request, res: Response): Promise<Response> {
+        try {
+            const token = req.cookies['jwt'];
+            let data = JSON.parse(jwtToken.jwtDecoded(token));
+
+            if (!data) {
+                return res.status(401).json({
+                    message: 'Unauthorized request',
+                });
+            }
+
+            const files = await new FilesService().createNewFile(data.id);
+
+            return res.json({files});
+        } catch (err: any) {
+            return res.status(401).json({ err });
+        }
+    }
+
     async getFiles(req: Request, res: Response): Promise<Response> {
         try {
             const token = req.cookies['jwt'];
@@ -66,23 +92,31 @@ export class FilesController {
             return res.status(500).json({ err });
         }
     }
-
-    async createFile(req: Request, res: Response): Promise<Response> {
+    
+    async updateFileTitle(req: Request, res: Response): Promise<Response> {
         try {
-            const token = req.cookies['jwt'];
-            let data = JSON.parse(jwtToken.jwtDecoded(token));
-
-            if (!data) {
-                return res.status(401).json({
-                    message: 'Unauthorized request',
+            const fileID = req.params.fileID;
+            const newTitle = req.body.title;
+            
+            if (!fileID || !newTitle) {
+                return res.status(400).json({
+                    message: 'Bad Request: Missing file ID or new title',
                 });
             }
-
-            const files = await new FilesService().createNewFile(data.id);
-
-            return res.json({files});
+    
+            const updatedFile = await new FilesService().changeFileTitle(fileID, newTitle);
+    
+            if (!updatedFile) {
+                return res.status(404).json({
+                    message: 'File not found',
+                });
+            }
+    
+            return res.json({message: 'File title updated successfully', file: updatedFile});
+            
         } catch (err: any) {
-            return res.status(401).json({ err });
+            return res.status(500).json({ err });
         }
     }
+
 }
