@@ -28,13 +28,15 @@ export class FilesController {
             const token = req.cookies['jwt'];
             let data = JSON.parse(jwtToken.jwtDecoded(token));
 
+            let userID = data.id
+
             if (!data) {
                 return res.status(401).json({
                     message: 'Unauthorized request',
                 });
             }
 
-            const files = await new FilesService().getFilesByUserId(data.id);
+            const files = await new FilesService().getFilesByUserId(userID);
 
             return res.json({files});
         } catch (err: any) {
@@ -64,7 +66,20 @@ export class FilesController {
     async deleteFile(req: Request, res: Response): Promise<Response> {
         try {
             const fileID = req.params.fileID;
-            
+            const token = req.cookies['jwt'];
+
+            let data = JSON.parse(jwtToken.jwtDecoded(token));
+
+            let userID = data.id
+
+            let hasAuth = await new FilesService().hasAuthToEditTheFile(userID,  fileID)
+
+            if(!hasAuth) {
+                return res.status(404).json({
+                    message: 'Unauthorized user or file not found',
+                });
+            }
+
             if (!fileID) {
                 return res.status(400).json({
                     message: 'Bad Request: No file ID provided',
@@ -77,7 +92,7 @@ export class FilesController {
                 return res.status(404).json({
                     message: 'File not found',
                 });
-            }
+            }  
 
             return res.json({message: 'File deleted successfully'});
             
@@ -90,6 +105,26 @@ export class FilesController {
         try {
             const fileID = req.params.fileID;
             const newTitle = req.body.title;
+            const token = req.cookies['jwt'];
+
+            let data = JSON.parse(jwtToken.jwtDecoded(token));
+
+            if (!data) {
+                return res.status(401).json({
+                    message: 'Unauthorized request',
+                });
+            }
+
+            let userID = data.id
+
+            let hasAuth = await new FilesService().hasAuthToEditTheFile(userID,  fileID)
+
+            if(!hasAuth) {
+                return res.status(404).json({
+                    message: 'Unauthorized user or file not found',
+                });
+            }
+            
             
             if (!fileID || !newTitle) {
                 return res.status(400).json({
@@ -118,6 +153,25 @@ export class FilesController {
         try {
             const fileID = req.params.fileID;
             const newContent = req.body.content;
+            const token = req.cookies['jwt'];
+
+            let data = JSON.parse(jwtToken.jwtDecoded(token));
+
+            if (!data) {
+                return res.status(401).json({
+                    message: 'Unauthorized request',
+                });
+            }
+
+            let userID = data.id
+
+            let hasAuth = await new FilesService().hasAuthToEditTheFile(userID,  fileID)
+
+            if(!hasAuth) {
+                return res.status(404).json({
+                    message: 'Unauthorized user or file not found',
+                });
+            }
             
             if (!fileID || !newContent) {
                 return res.status(400).json({

@@ -8,6 +8,19 @@ export class FilesService {
         this.model = FilesModel;
     }
 
+    async hasAuthToEditTheFile(userId: string, fileID: string): Promise<boolean> {
+        try {
+            const file = await this.model.findById(fileID);
+    
+            if(file && file.userID == userId) {
+                return true;
+            }
+            return false;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
     async getFilesByUserId(userId: string): Promise<FilesDocument[]> {
         try {
             const files = await this.model.find({ userID: userId });
