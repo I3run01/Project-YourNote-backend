@@ -7,7 +7,10 @@ export class FilesController {
     async createFile(req: Request, res: Response): Promise<Response> {
         try {
             const token = req.cookies['jwt'];
+
             let data = JSON.parse(jwtToken.jwtDecoded(token));
+
+            let userID = data.id
 
             if (!data) {
                 return res.status(401).json({
@@ -15,9 +18,9 @@ export class FilesController {
                 });
             }
 
-            const files = await new FilesService().createNewFile(data.id);
+            const files = await new FilesService().createNewFile(userID);
 
-            return res.json({files});
+            return res.json(files);
         } catch (err: any) {
             return res.status(401).json({ err });
         }
@@ -38,7 +41,7 @@ export class FilesController {
 
             const files = await new FilesService().getFilesByUserId(userID);
 
-            return res.json({files});
+            return res.json(files);
         } catch (err: any) {
             return res.status(401).json({ err });
         }
@@ -56,7 +59,7 @@ export class FilesController {
     
             const file = await new FilesService().getFileById(fileID);
     
-            return res.json({file});
+            return res.json(file);
 
         } catch (err: any) {
             return res.status(401).json({ err });
