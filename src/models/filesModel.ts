@@ -2,6 +2,7 @@ import { Document, Schema, Model, model } from "mongoose";
 
 interface IFiles {
     userID: string;
+    title: string
     content: object[]
 }
 
@@ -10,9 +11,13 @@ const FilesSchema: Schema = new Schema({
         type: String,
         required: true
     },
+    title: {
+        type: String,
+        required: true
+    },
     content: {
         type: [Schema.Types.Mixed],
-        required: true
+        required: false
     }
 });
 
