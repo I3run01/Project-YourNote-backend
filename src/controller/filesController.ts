@@ -156,8 +156,6 @@ export class FilesController {
             let newContent = req.body.content;
 
             newContent = JSON.parse(newContent)
-
-            console.log(newContent)
     
             if (!fileID || !newContent) {
                 return res.status(400).json({
