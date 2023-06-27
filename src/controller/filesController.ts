@@ -151,39 +151,40 @@ export class FilesController {
     }
 
     async updateFileContent(req: Request, res: Response): Promise<Response> {
-        //TODO: content should be an array
-
         try {
             const fileID = req.params.fileID;
-            const newContent = req.body.content;
-            const token = req.cookies['jwt'];
+            let newContent = req.body.content;
 
-            let data = JSON.parse(jwtToken.jwtDecoded(token));
+            newContent = JSON.parse(newContent)
 
-            if (!data) {
-                return res.status(401).json({
-                    message: 'Unauthorized request',
-                });
-            }
-
-            let userID = data.id
-
-            let hasAuth = await new FilesService().hasAuthToEditTheFile(userID,  fileID)
-
-            if(!hasAuth) {
-                return res.status(404).json({
-                    message: 'Unauthorized user or file not found',
-                });
-            }
-            
+            console.log(newContent)
+    
             if (!fileID || !newContent) {
                 return res.status(400).json({
                     message: 'Bad Request: Missing file ID or new Content',
                 });
             }
     
-            const updatedFile = await new FilesService().changeFileContent(fileID, newContent);
+            const token = req.cookies['jwt'];
+            let data = JSON.parse(jwtToken.jwtDecoded(token));
     
+            if (!data) {
+                return res.status(401).json({
+                    message: 'Unauthorized request',
+                });
+            }
+    
+            let userID = data.id
+            let hasAuth = await new FilesService().hasAuthToEditTheFile(userID,  fileID)
+    
+            if(!hasAuth) {
+                return res.status(404).json({
+                    message: 'Unauthorized user or file not found',
+                });
+            }
+            
+            const updatedFile = await new FilesService().changeFileContent(fileID, newContent);
+            
             if (!updatedFile) {
                 return res.status(404).json({
                     message: 'File not found',
@@ -193,8 +194,8 @@ export class FilesController {
             return res.json({message: 'File content updated successfully', file: updatedFile});
             
         } catch (err: any) {
-            return res.status(500).json({ err });
+            return res.status(500).json({ error: err.message });
         }
     }
-
+    
 }
