@@ -22,9 +22,7 @@ export class UsersController {
                 const confirmationCode:string = jwtToken.jwtEncoded(user.id)
 
                 const emailConfirmationLink = `https://yournote.cloud/emailConfirmation/${confirmationCode}`
-
-                
-                
+  
                 mailServices.sendConfirmationEmail(user.email, emailConfirmationLink, user?.name)
 
                 return res.status(401).json({
