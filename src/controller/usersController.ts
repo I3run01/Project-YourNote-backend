@@ -172,7 +172,7 @@ export class UsersController {
 
     async signOut (req: Request, res: Response) {
         try {
-            res.clearCookie('jwt', {domain: 'yournote.cloud', secure: true});
+            res.clearCookie('jwt', { sameSite: 'none', secure: true, httpOnly: true });
 
             return res.json({ message: 'success' })
         } catch(error) {
