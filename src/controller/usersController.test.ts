@@ -9,48 +9,54 @@ const usersMock = {
     status: 'Active'
 }
 
+const mockUserService = {
+    findByEmail: jest.fn(),
+    create: jest.fn().mockImplementation((userDto) => Promise.resolve({
+        ...userDto,
+        _id: 'mockedUserId',
+    })),
+};
+
 jest.mock('../services/usersService', () => {
     return {
-      usersService: jest.fn().mockImplementation(() => {
-        return {
-          findByEmail: jest.fn().mockReturnValue(usersMock),
-          create: jest.fn().mockImplementation((userDto) => Promise.resolve({
-            ...userDto,
-            _id: 'mockedUserId',
-          })),
-          // Mock other methods here
-        };
-      }),
+        usersService: jest.fn(() => mockUserService),
     };
-  });
+});
 
 describe('POST /api/users/signup', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
-  it('should sign up with valid credentials', async () => {
-    new usersService().findByEmail = jest.fn().mockReturnValue(null)
+    it('should sign up with valid credentials', async () => {
+        mockUserService.findByEmail.mockResolvedValue(null);
 
-    const response = await request(app)
-        .post('/api/users/signup')
-        .send({ email: 'newuser@gmail.com', password: 'password' });
+        const response = await request(app)
+            .post('/api/users/signup')
+            .send({ email: 'newuser@gmail.com', password: 'password' });
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('_id');
-    expect(response.body).toHaveProperty('email', 'newuser@gmail.com');
-  });
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('_id');
+        expect(response.body).toHaveProperty('email', 'newuser@gmail.com');
+    });
 
-  it('should not sign up with existing user email', async () => {
-    const response = await request(app)
-        .post('/api/users/signup')
-        .send({ email: 'test@gmail.com', password: 'password' });
+    it('should not sign up with existing user email', async () => {
+        mockUserService.findByEmail.mockResolvedValue(usersMock);
 
-    expect(response.status).toBe(400);
-  });
+        const response = await request(app)
+            .post('/api/users/signup')
+            .send({ email: 'test@gmail.com', password: 'password' });
 
-  it('should not sign up with invalid or incomplete credentials', async () => {
-    const response = await request(app)
-        .post('/api/users/signup')
-        .send({ email: ''});
+        expect(response.status).toBe(400);
+    });
 
-    expect(response.status).toBe(400);
-  });
+    it('should not sign up with invalid or incomplete credentials', async () => {
+        mockUserService.findByEmail.mockResolvedValue(null);
+
+        const response = await request(app)
+            .post('/api/users/signup')
+            .send({ email: ''});
+
+        expect(response.status).toBe(400);
+    });
 });
