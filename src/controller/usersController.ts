@@ -275,7 +275,7 @@ export class UsersController {
             let user = await new usersService().findbyId(data.id)
 
             if (!user) {
-                return res.status(400).json({ message: 'no user found' });
+                return res.status(404).json({ message: 'no user found' });
             }
         
             await new usersService().updatePassword(user.id, hashPassword)
